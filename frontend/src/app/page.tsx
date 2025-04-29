@@ -5,15 +5,15 @@ import { Card, CardAction, CardContent, CardTitle } from '@/components/ui/card';
 export default function Home() {
   return (
     <div className='bg-[#dddff7] dark:bg-[#1a1a2e] text-gray-800 dark:text-gray-200 h-screen'>
-      <main className='flex items-center justify-between pt-56 space-y-24 h-[700px] w-[950px] mx-auto gap-20 max-lg:flex-col'>
-        <div className='flex flex-col items-center justify-center'>
+      <main className='flex items-center justify-between pt-56 space-y-24 h-[700px] max-w-[950px] mx-auto gap-20 max-lg:flex-col'>
+        <div className='flex flex-col items-center justify-center mx-5 text-center'>
           <h1 className='text-4xl font-bold'>Welcome to Our Application</h1>
           <p className='mt-4 text-lg'>
             This is the home page of our application.
           </p>
         </div>
-        <div className='flex flex-col items-center justify-center'>
-          <Card className='w-96'>
+        <div className='flex flex-col items-center justify-center mx-5'>
+          <Card className='max-w-96'>
             <CardTitle className='text-lg font-medium px-5 py-0'>
               Утасны дугаар эсвэл трак кодоор хайх
             </CardTitle>
