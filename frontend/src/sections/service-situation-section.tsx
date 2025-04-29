@@ -1,6 +1,6 @@
 export const ServiceSituationSection = () => {
   return (
-    <div className='bg-[#F2F5FC] py-20 flex flex-col gap-10 items-center w-full pt-40 max-lg:px-5 dark:bg-[#070845]'>
+    <div className='bg-[#EAEBFA] py-20 flex flex-col gap-10 items-center w-full pt-40 max-lg:px-5 dark:bg-[#070845]'>
       <h1 className='font-semibold text-2xl text-center'>
         МОНГОЛ УЛСЫН ХИЛЭЭР НЭВТРҮҮЛЭХИЙГ ХОРИГЛОХ БАРААНЫ ЖАГСААЛТ
       </h1>

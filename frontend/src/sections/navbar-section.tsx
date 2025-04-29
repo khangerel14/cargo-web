@@ -2,13 +2,14 @@
 
 import { ModeToggle } from '@/components/mode-toggle';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { NavbarSheet } from './navbar-sheet';
 
 export const NavbarSection = () => {
   const router = useRouter();
+  const path = usePathname();
   return (
-    <div className='container flex items-center justify-between fixed inset-0 h-20 z-50 bg-transparent backdrop-blur-sm dark:bg-[#09125a] dark:bg-opacity-50'>
+    <div className='container flex items-center justify-between fixed inset-0 h-20 z-50 bg-transparent backdrop-blur-sm dark:bg-[#3c479a40] dark:bg-opacity-50'>
       <div>
         <button onClick={() => router.push('/')}>
           <Image src='/star.png' alt='star cargoo' width={80} height={24} />
@@ -16,25 +17,28 @@ export const NavbarSection = () => {
       </div>
       <div className='flex items-center gap-6 max-lg:hidden'>
         <button
-          className='text-md hover:text-[#284CE5]'
+          className='text-md hover:text-[#657bdb]'
+          style={{
+            textDecoration: path === 'connect-address' ? '#284CE5' : 'black',
+          }}
           onClick={() => router.push('/connect-address')}
         >
           Хаяг холбох
         </button>
         <button
-          className='text-md hover:text-[#284CE5]'
-          onClick={() => router.push('/contact')}
-        >
-          Холбоо барих
-        </button>
-        <button
-          className='text-md hover:text-[#284CE5]'
+          className='text-md hover:text-[#657bdb]'
+          style={{
+            textDecoration: path === 'service-situation' ? '#284CE5' : 'black',
+          }}
           onClick={() => router.push('/service-situation')}
         >
           Санамж
         </button>
         <button
-          className='text-md hover:text-[#284CE5]'
+          className='text-md hover:text-[#657bdb]'
+          style={{
+            textDecoration: path === '/link-order' ? '#284CE5' : 'black',
+          }}
           onClick={() => router.push('/link-order')}
         >
           Линк захиалага

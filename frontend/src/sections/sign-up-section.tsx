@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 
 type CardProps = React.ComponentProps<typeof Card>;
 
-export const LogInSection = ({ className, ...props }: CardProps) => {
+export const SignUpSection = ({ className, ...props }: CardProps) => {
   const router = useRouter();
   return (
     <div className='bg-[#EAEBFA] flex items-center justify-center w-full min-h-screen pt-20 dark:bg-[#1a1a2e]'>
@@ -45,17 +45,17 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
           </CardContent>
           <CardFooter>
             <Button className='w-full'>
-              <Check /> Нэвтрэх
+              <Check /> Бүртгүүлэх
             </Button>
           </CardFooter>
         </Card>
         <div className='flex items-center text-sm text-gray-500 gap-2'>
-          <p>Хэрэв та бүртгэлгүй бол бүртгүүлнэ үү!</p>
+          <p>Хэрэв та бүртгэлтэй бол нэвтэрнэ үү!</p>
           <button
             className='text-black decoration-1 dark:text-white'
-            onClick={() => router.push('/sign-up')}
+            onClick={() => router.push('log-in')}
           >
-            Бүртгүүлэх
+            Нэвтрэх
           </button>
         </div>
       </div>
