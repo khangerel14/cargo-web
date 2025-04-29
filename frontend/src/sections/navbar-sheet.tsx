@@ -39,12 +39,6 @@ export function NavbarSheet() {
             </button>
             <button
               className='text-md hover:text-[#284CE5]'
-              onClick={() => router.push('/contact')}
-            >
-              Холбоо барих
-            </button>
-            <button
-              className='text-md hover:text-[#284CE5]'
               onClick={() => router.push('/service-situation')}
             >
               Санамж

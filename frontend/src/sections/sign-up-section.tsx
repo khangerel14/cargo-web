@@ -19,8 +19,8 @@ export const SignUpSection = ({ className, ...props }: CardProps) => {
   const router = useRouter();
   return (
     <div className='bg-[#EAEBFA] flex items-center justify-center w-full min-h-screen pt-20 dark:bg-[#1a1a2e]'>
-      <div className='flex flex-col items-center justify-center gap-3'>
-        <Card className={cn('w-[380px]', className)} {...props}>
+      <div className='flex flex-col items-center justify-center gap-3 px-3'>
+        <Card className={cn('max-w-[480px] w-full', className)} {...props}>
           <CardHeader>
             <CardTitle>Та утасны дугаараа оруулна уу!</CardTitle>
             <CardDescription></CardDescription>
