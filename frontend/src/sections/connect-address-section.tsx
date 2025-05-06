@@ -73,6 +73,20 @@ export const ConnectAddressSection = () => {
           </h1>
         </div>
       </div>
+      <div className='flex items-center gap-5 mt-10 max-md:flex-col'>
+        <a
+          target='_blank'
+          href='https://www.facebook.com/permalink.php/?story_fbid=122105808830572311&id=61567169340089'
+        >
+          ✅✅✅ TAOBAO ДЭЭР ЭРЭЭН ДЭХЬ ХАЯГ ХОЛБОХ ЗААВАР
+        </a>
+        <a
+          target='_blank'
+          href='https://www.facebook.com/permalink.php/?story_fbid=122105872424572311&id=61567169340089'
+        >
+          📍📍📍 PINDUODUO ДЭЭР ЭРЭЭН ДЭХЬ ХАЯГ ХОЛБОХ ЗААВАР
+        </a>
+      </div>
       <ToastContainer />
     </div>
   );

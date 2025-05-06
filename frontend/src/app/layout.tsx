@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { NavbarSection } from '@/sections/navbar-section';
-import { FooterSection } from '@/sections/footer-section';
+import { ToastContainer } from 'react-toastify';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -45,7 +45,7 @@ export default function RootLayout({
         >
           <NavbarSection />
           {children}
-          <FooterSection />
+          <ToastContainer position='top-right' autoClose={3000} />
         </ThemeProvider>
       </body>
     </html>
