@@ -64,7 +64,7 @@ export function ProductDialog({ fetchData }: Props) {
           <div className='flex flex-col gap-1'>
             <label htmlFor='phone'>Утасны дугаар</label>
             <input
-              type='text'
+              type='number'
               onChange={(e) => setPhone(e.target.value)}
               placeholder='Утасны дугаар'
               className='border p-2 rounded-sm'
@@ -73,7 +73,7 @@ export function ProductDialog({ fetchData }: Props) {
           <div className='flex flex-col gap-1'>
             <label htmlFor='trackingCode'>Трак код</label>
             <input
-              type='number'
+              type='text'
               onChange={(e) => setTrackingCode(e.target.value)}
               placeholder='Трак код'
               className='border p-2 rounded-sm'
