@@ -1,15 +1,16 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ROLE } from '../../types/common';
 import { UserTable } from './user-table';
 import { AdminTable } from './admin-table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArchivedTable } from './archived-table';
 
 export const InformationSection = () => {
   const [userRole, setUserRole] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     try {
@@ -39,40 +40,6 @@ export const InformationSection = () => {
     }
   }, []);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL
-        }/api/users/user?phoneNumber=${encodeURIComponent(phoneNumber)}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      const data = await response.json();
-      const formattedData = Array.isArray(data) ? data : data ? [data] : [];
-      console.log(formattedData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setError(`Failed to load data: ${error}`);
-    } finally {
-      setLoading(false);
-    }
-  }, [phoneNumber]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  if (loading) {
-    return <div className='flex justify-center'>Loading...</div>;
-  }
-
   if (error) {
     return <div className='text-red-500'>{error}</div>;
   }
@@ -82,12 +49,35 @@ export const InformationSection = () => {
       <h1 className='font-semibold text-2xl text-center'>
         Таны бүтээгдэхүүний мэдээлэл
       </h1>
+      <div className='w-full md:w-[900px] flex justify-end'></div>
       <div className='w-full md:w-[900px] flex flex-col gap-5'>
         {error && <p className='text-red-500'>{error}</p>}
         {userRole === ROLE.USER ? (
-          <UserTable phoneNumber={phoneNumber} />
+          <Tabs defaultValue='product'>
+            <TabsList className='grid w-full grid-cols-2'>
+              <TabsTrigger value='product'>Бүтээгдэхүүн</TabsTrigger>
+              <TabsTrigger value='archive'>Архивласан</TabsTrigger>
+            </TabsList>
+            <TabsContent value='product'>
+              <UserTable phoneNumber={phoneNumber} />
+            </TabsContent>
+            <TabsContent value='archive'>
+              <ArchivedTable userRole={userRole} phoneNumber={phoneNumber} />
+            </TabsContent>
+          </Tabs>
         ) : (
-          <AdminTable />
+          <Tabs defaultValue='product'>
+            <TabsList className='grid w-full grid-cols-2'>
+              <TabsTrigger value='product'>Бүтээгдэхүүн</TabsTrigger>
+              <TabsTrigger value='archive'>Архивласан</TabsTrigger>
+            </TabsList>
+            <TabsContent value='product'>
+              <AdminTable />
+            </TabsContent>
+            <TabsContent value='archive'>
+              <ArchivedTable userRole={userRole} phoneNumber={phoneNumber} />
+            </TabsContent>
+          </Tabs>
         )}
       </div>
     </div>

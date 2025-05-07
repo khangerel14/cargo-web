@@ -42,6 +42,17 @@ export const NavbarSection = () => {
         </button>
       </div>
       <div className='flex items-center gap-6 max-lg:hidden'>
+        {user && (
+          <button
+            className='text-md hover:text-[#657bdb]'
+            style={{
+              textDecoration: path === 'information' ? '#284CE5' : 'black',
+            }}
+            onClick={() => router.push('/information')}
+          >
+            Захиалгууд
+          </button>
+        )}
         <button
           className='text-md hover:text-[#657bdb]'
           style={{

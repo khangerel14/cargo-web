@@ -42,6 +42,14 @@ export function NavbarSheet({ logOut, phone, user }: Props) {
             ) : (
               <UserDialog logOut={logOut} phone={phone} />
             )}
+            {user && (
+              <button
+                className='text-md hover:text-[#657bdb]'
+                onClick={() => router.push('/information')}
+              >
+                Захиалгууд
+              </button>
+            )}
             <button
               className='text-md hover:text-[#284CE5]'
               onClick={() => router.push('/connect-address')}
