@@ -97,7 +97,7 @@ export function AdminTable() {
     .reduce((total, item) => total + (item.price || 0), 0);
   return (
     <>
-      <div className='w-full md:w-[900px] flex justify-end gap-2'>
+      <div className='w-full md:w-[950px] flex justify-end gap-2'>
         <ProductDialog fetchData={fetchData} />
         <Button onClick={() => router.push('/search-product')}>
           Бүтээгдэхүүн хайх
