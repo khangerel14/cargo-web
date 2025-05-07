@@ -65,9 +65,7 @@ export function ArchivedTable({ phoneNumber, userRole }: Props) {
       if (!product) return;
 
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
-        }/api/products/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`,
         {
           method: 'DELETE',
           headers: {
