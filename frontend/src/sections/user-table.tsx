@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Product } from '../../types/product';
-import { PICKUP_TYPE } from '../../types/common';
+import { PICKUP_TYPE, STATUS } from '../../types/common';
 import { useCallback, useEffect, useState } from 'react';
 import { changeStatus } from '@/utils/change-status';
 import { Badge } from '@/components/ui/badge';
@@ -99,7 +99,9 @@ export function UserTable({ phoneNumber }: Props) {
     return <div>Таны бүртгэлтэй бараа байхгүй байна</div>;
   }
 
-  const sum = userData.reduce((total, item) => total + (item.price || 0), 0);
+  const sum = userData
+    .filter((item) => item.status !== STATUS.HANDED_OVER)
+    .reduce((total, item) => total + (item.price || 0), 0);
 
   return (
     <>
@@ -118,7 +120,11 @@ export function UserTable({ phoneNumber }: Props) {
           {userData.length > 0 && (
             <>
               <TableCaption>
-                Нийт бараа: {userData.length <= 1 ? 0 : userData.length}
+                Нийт бараа:
+                {
+                  userData.filter((item) => item.status !== STATUS.HANDED_OVER)
+                    .length
+                }
               </TableCaption>
               <TableCaption>Нийт дүн: {sum ?? 0} ₮</TableCaption>
             </>
@@ -134,34 +140,38 @@ export function UserTable({ phoneNumber }: Props) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {userData.map((data: Product, index) => (
-              <TableRow key={index}>
-                {data.trackingCode ? (
-                  <>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell className='font-medium'>
-                      {data.trackingCode}
+            {userData
+              .filter((item: Product) => item.status !== STATUS.HANDED_OVER)
+              .map((data: Product, index) => (
+                <TableRow key={index}>
+                  {data.trackingCode ? (
+                    <>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell className='font-medium'>
+                        {data.trackingCode}
+                      </TableCell>
+                      <TableCell>
+                        <Badge>{changeStatus(data.status)}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        {data.pickupType === PICKUP_TYPE.PICKUP
+                          ? 'Очиж авах'
+                          : 'Хүргүүлж авах'}
+                      </TableCell>
+                      <TableCell>{data.phoneNumber}</TableCell>
+                      <TableCell className='text-right'>
+                        {data.price
+                          ? `${data.price} ₮`
+                          : 'Дүн оруулаагүй байна'}
+                      </TableCell>
+                    </>
+                  ) : (
+                    <TableCell colSpan={6} className='text-center'>
+                      No tracking code available
                     </TableCell>
-                    <TableCell>
-                      <Badge>{changeStatus(data.status)}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      {data.pickupType === PICKUP_TYPE.PICKUP
-                        ? 'Очиж авах'
-                        : 'Хүргүүлж авах'}
-                    </TableCell>
-                    <TableCell>{data.phoneNumber}</TableCell>
-                    <TableCell className='text-right'>
-                      {data.price ? `${data.price} ₮` : 'Дүн оруулаагүй байна'}
-                    </TableCell>
-                  </>
-                ) : (
-                  <TableCell colSpan={6} className='text-center'>
-                    No tracking code available
-                  </TableCell>
-                )}
-              </TableRow>
-            ))}
+                  )}
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Card>

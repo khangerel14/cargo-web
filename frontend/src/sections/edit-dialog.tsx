@@ -25,7 +25,9 @@ import { useState } from 'react';
 
 type Props = Readonly<{
   row: Product;
-  fetchData: () => void;
+  fetchData?: () => void;
+  handleSearch?: (phoneNumber: string) => void;
+  phoneNumber?: string;
 }>;
 
 interface FormData {
@@ -35,7 +37,12 @@ interface FormData {
   price: number;
 }
 
-export function EditDialog({ row, fetchData }: Props) {
+export function EditDialog({
+  row,
+  fetchData,
+  handleSearch,
+  phoneNumber,
+}: Props) {
   const [formData, setFormData] = useState<FormData>({
     trackingCode: row.trackingCode || '',
     phoneNumber: row.phoneNumber || '',
@@ -103,7 +110,8 @@ export function EditDialog({ row, fetchData }: Props) {
         throw new Error(errorData.message || 'Failed to update product.');
       }
 
-      fetchData();
+      fetchData?.();
+      handleSearch?.(phoneNumber ?? '');
       setOpen(false); // Close dialog on success
     } catch (error) {
       console.error('Error updating product:', error);

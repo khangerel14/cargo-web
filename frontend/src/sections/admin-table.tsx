@@ -10,15 +10,17 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Product } from '../../types/product';
-import { PICKUP_TYPE } from '../../types/common';
+import { PICKUP_TYPE, STATUS } from '../../types/common';
 import { Button } from '@/components/ui/button';
 import { useCallback, useEffect, useState } from 'react';
 import { ProductDialog } from './product-dialog';
 import { changeStatus } from '@/utils/change-status';
 import { Badge } from '@/components/ui/badge';
 import { EditDialog } from './edit-dialog';
+import { useRouter } from 'next/navigation';
 
 export function AdminTable() {
+  const router = useRouter();
   const [userData, setUserData] = useState<Product[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +70,6 @@ export function AdminTable() {
           headers: {
             'Content-Type': 'application/json',
           },
-          //   body: JSON.stringify({ pickupType: newPickupType }),
         }
       );
 
@@ -91,17 +92,27 @@ export function AdminTable() {
     return <div className='text-red-500'>{error}</div>;
   }
 
-  const sum = userData?.reduce((total, item) => total + (item.price || 0), 0);
-
+  const sum = userData
+    ?.filter((item) => item.status !== STATUS.HANDED_OVER)
+    .reduce((total, item) => total + (item.price || 0), 0);
   return (
     <>
-      <div className='w-full md:w-[900px] flex justify-end'>
+      <div className='w-full md:w-[900px] flex justify-end gap-2'>
         <ProductDialog fetchData={fetchData} />
+        <Button onClick={() => router.push('/search-product')}>
+          Бүтээгдэхүүн хайх
+        </Button>
       </div>
       <Table aria-label='User products table'>
         {userData && userData.length > 0 && (
           <>
-            <TableCaption>Нийтэй бараа: {userData?.length}</TableCaption>
+            <TableCaption>
+              Нийтэй бараа:
+              {
+                userData.filter((item) => item.status !== STATUS.HANDED_OVER)
+                  .length
+              }
+            </TableCaption>
             <TableCaption>Нийтэй дүн: {sum} ₮</TableCaption>
           </>
         )}
@@ -117,46 +128,48 @@ export function AdminTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {userData?.map((data: Product, index) => (
-            <TableRow key={data._id}>
-              {data.trackingCode ? (
-                <>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell className='font-medium'>
-                    {data.trackingCode}
+          {userData
+            ?.filter((item: Product) => item.status !== STATUS.HANDED_OVER)
+            .map((data: Product, index) => (
+              <TableRow key={data._id}>
+                {data.trackingCode ? (
+                  <>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell className='font-medium'>
+                      {data.trackingCode}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant='secondary'>
+                        {changeStatus(data.status)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {data.pickupType === PICKUP_TYPE.PICKUP
+                        ? 'Очиж авах'
+                        : 'Хүргүүлж авах'}
+                    </TableCell>
+                    <TableCell>{data.phoneNumber}</TableCell>
+                    <TableCell>
+                      {data.price ? `${data.price} ₮` : 'Дүн оруулаагүй байна'}
+                    </TableCell>
+                    <TableCell className='flex items-center justify-end gap-2'>
+                      <Button
+                        color='error'
+                        variant='outline'
+                        onClick={() => handleDelete({ id: data._id })}
+                      >
+                        Устгах
+                      </Button>
+                      <EditDialog row={data} fetchData={fetchData} />
+                    </TableCell>
+                  </>
+                ) : (
+                  <TableCell colSpan={6} className='text-center'>
+                    No tracking code available
                   </TableCell>
-                  <TableCell>
-                    <Badge variant='secondary'>
-                      {changeStatus(data.status)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {data.pickupType === PICKUP_TYPE.PICKUP
-                      ? 'Очиж авах'
-                      : 'Хүргүүлж авах'}
-                  </TableCell>
-                  <TableCell>{data.phoneNumber}</TableCell>
-                  <TableCell>
-                    {data.price ? `${data.price} ₮` : 'Дүн оруулаагүй байна'}
-                  </TableCell>
-                  <TableCell className='flex items-center justify-end gap-2'>
-                    <Button
-                      color='error'
-                      variant='outline'
-                      onClick={() => handleDelete({ id: data._id })}
-                    >
-                      Устгах
-                    </Button>
-                    <EditDialog row={data} fetchData={fetchData} />
-                  </TableCell>
-                </>
-              ) : (
-                <TableCell colSpan={6} className='text-center'>
-                  No tracking code available
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
+                )}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>
