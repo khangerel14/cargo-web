@@ -3,10 +3,12 @@ import { body, validationResult, query } from 'express-validator';
 import {
   createProduct,
   getProducts,
-  getProductById,
   updateProduct,
   deleteProduct,
   getProductsByUser,
+  getProductsByStatus,
+  getProductsByUserNumber,
+  getProductsByStatusAdmin,
   updateProductsByPhoneNumber,
 } from '../controllers/productController';
 
@@ -61,8 +63,11 @@ router.get(
 // Update pickupType for all products by user phoneNumber
 router.put('/put-products', updateProductsByPhoneNumber);
 
-// Get Product by ID
-router.get('/:id', getProductById);
+// Get Product by status
+router.get('/status', getProductsByStatus);
+router.get('/status/admin', getProductsByStatusAdmin);
+
+router.get('/user/home', getProductsByUserNumber);
 
 // Update Product
 router.put('/:id', (req: Request, res: Response, next: NextFunction) => {

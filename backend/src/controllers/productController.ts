@@ -77,29 +77,6 @@ export const getProducts = async (
   }
 };
 
-// Get Product by ID
-export const getProductById = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const product = await Product.findById(req.params.id).populate(
-      'user',
-      'name phoneNumber'
-    );
-    if (!product) {
-      res.status(404).json({ message: 'Бүтээгдэхүүн мэдээлэл олдсонгүй.' });
-      return;
-    }
-    res.json(product);
-  } catch (error) {
-    console.error('Error occurred:', error);
-    res
-      .status(500)
-      .json({ message: 'Server error', error: (error as Error).message });
-  }
-};
-
 // Update Product
 export const updateProduct = async (
   req: Request,
@@ -169,7 +146,6 @@ export const updateProductsByPhoneNumber = async (
       { phoneNumber: phoneNumber },
       { $set: { pickupType } }
     );
-    console.log('Update result:', result);
 
     if (result.matchedCount === 0) {
       res
@@ -188,6 +164,68 @@ export const updateProductsByPhoneNumber = async (
     });
   } catch (error) {
     console.error('Error updating products:', error);
+    res.status(500).json({
+      message: 'Server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
+export const getProductsByStatus = async (req: Request, res: Response) => {
+  try {
+    const { phoneNumber, status } = req.query;
+
+    const products = await Product.find({
+      phoneNumber: phoneNumber,
+      status: status,
+    });
+
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
+export const getProductsByStatusAdmin = async (req: Request, res: Response) => {
+  try {
+    const { status } = req.query;
+
+    const products = await Product.find({
+      status: status,
+    });
+
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
+export const getProductsByUserNumber = async (req: Request, res: Response) => {
+  const { phoneNumber } = req.query;
+
+  if (!phoneNumber) {
+    return res.status(400).json({ message: 'Missing phoneNumber' });
+  }
+
+  try {
+    const products = await Product.find({
+      $or: [
+        { phoneNumber: phoneNumber.toString() },
+        { trackingCode: phoneNumber.toString() },
+      ],
+    });
+
+    res.json(products);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({
       message: 'Server error',
       error: (error as Error).message,
