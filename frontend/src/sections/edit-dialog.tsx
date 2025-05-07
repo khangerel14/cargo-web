@@ -88,9 +88,7 @@ export function EditDialog({ row, fetchData }: Props) {
     setLoading(true);
     try {
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
-        }/api/products/${row._id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/products/${row._id}`,
         {
           method: 'PUT',
           headers: {

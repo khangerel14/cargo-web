@@ -23,14 +23,17 @@ export function ProductDialog({ fetchData }: Props) {
 
   const handleCreateProduct = async () => {
     try {
-      const response = await axios.post('http://localhost:3030/api/products', {
-        name: 'product',
-        status: STATUS.ARRIVED_IN_EREEN,
-        pickupType: PICKUP_TYPE.PICKUP,
-        trackingCode,
-        phoneNumber: phone,
-        userId: '6816e2ebc120881a2fa4ac8b',
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/products`,
+        {
+          name: 'product',
+          status: STATUS.ARRIVED_IN_EREEN,
+          pickupType: PICKUP_TYPE.PICKUP,
+          trackingCode,
+          phoneNumber: phone,
+          userId: '6816e2ebc120881a2fa4ac8b',
+        }
+      );
       if (response.status === 201) {
         toast.success(response?.data?.message);
         fetchData();

@@ -2,6 +2,7 @@
 
 import { Card, CardAction, CardContent, CardTitle } from '@/components/ui/card';
 import { FooterSection } from '@/sections/footer-section';
+import { LogInSection } from '@/sections/log-in-section';
 import { useState } from 'react';
 
 export default function Home() {
@@ -26,10 +27,6 @@ export default function Home() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
       const data = await response.json();
       const formattedData = Array.isArray(data) ? data : data ? [data] : [];
       setUserData(formattedData);
@@ -43,13 +40,15 @@ export default function Home() {
   };
   return (
     <>
-      <div className='bg-[#dddff7] dark:bg-[#1a1a2e] text-gray-800 dark:text-gray-200 h-screen'>
-        <main className='flex items-center justify-between pt-56 space-y-24 h-fit max-w-[950px] mx-auto gap-20 max-lg:flex-col'>
+      <div className='bg-[#dddff7] dark:bg-[#1a1a2e] text-gray-800 dark:text-gray-200 min-h-screen'>
+        <main className='flex items-center justify-between sm:pt-44 pt-20 h-fit max-w-[950px] mx-auto gap-20 max-lg:flex-col'>
           <div className='flex flex-col items-center justify-center mx-5 text-center'>
-            <h1 className='text-4xl font-bold text-yellow-300'>Star Cargo</h1>
-            <p className='mt-4 text-lg'></p>
+            <h1 className='text-4xl font-bold text-yellow-500'>Star Cargo</h1>
+            <div className='mt-10'>
+              <LogInSection />
+            </div>
           </div>
-          <div className='flex flex-col items-center justify-center mx-5'>
+          <div className='flex flex-col items-center justify-center mx-5 mb-20'>
             <Card className='max-w-96 z-20'>
               <CardTitle className='text-lg font-medium px-5 py-0'>
                 Утасны дугаар эсвэл трак кодоор хайх
@@ -74,7 +73,8 @@ export default function Home() {
                         </div>
                       )
                     )}
-                    {userData.length === 0 && <p>Мэдээлэл олдсонгүй</p>}
+                    {userData.length === 0 ||
+                      (phoneNumber === '' && <p>Мэдээлэл олдсонгүй</p>)}
                   </div>
                 )}
                 {loading && <p>Ачаалалж байна...</p>}

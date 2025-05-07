@@ -28,9 +28,7 @@ export function AdminTable() {
     setError(null);
     try {
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
-        }/api/products/`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/products/`,
         {
           method: 'GET',
           headers: {
@@ -64,9 +62,7 @@ export function AdminTable() {
       if (!product) return;
 
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
-        }/api/products/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`,
         {
           method: 'DELETE',
           headers: {
