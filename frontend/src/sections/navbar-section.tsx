@@ -14,6 +14,12 @@ export const NavbarSection = () => {
   const path = usePathname();
   const [user, setUser] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure theme-dependent rendering only happens client-side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -25,16 +31,24 @@ export const NavbarSection = () => {
   };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const storedPhone = localStorage.getItem('phoneNumber');
-
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    if (storedPhone) {
-      setPhoneNumber(JSON.parse(storedPhone));
+    try {
+      const storedUser = localStorage.getItem('user');
+      const storedPhone = localStorage.getItem('phoneNumber');
+      if (storedUser) setUser(JSON.parse(storedUser));
+      if (storedPhone) setPhoneNumber(JSON.parse(storedPhone));
+    } catch (error) {
+      console.error('Failed to parse localStorage data:', error);
     }
   }, [path]);
+
+  // Default classes during SSR to avoid mismatch
+  const buttonClasses = mounted
+    ? `text-md hover:text-[#657bdb] ${
+        path === '/' && theme === 'light'
+          ? 'text-white'
+          : 'text-black dark:text-white'
+      }`
+    : 'text-md hover:text-[#657bdb] text-black'; // Fallback for SSR
 
   return (
     <div className='container flex items-center justify-between fixed inset-0 h-20 z-50 bg-transparent backdrop-blur-sm dark:bg-[#3c479a40] dark:bg-opacity-50'>
@@ -46,42 +60,26 @@ export const NavbarSection = () => {
       <div className='flex items-center gap-6 max-lg:hidden'>
         {user && (
           <button
-            className={`text-md hover:text-[#657bdb] ${
-              path === '/' && theme === 'light'
-                ? 'text-white'
-                : 'text-black dark:text-white'
-            }`}
+            className={buttonClasses}
             onClick={() => router.push('/information')}
           >
             Захиалгууд
           </button>
         )}
         <button
-          className={`text-md hover:text-[#657bdb] ${
-            path === '/' && theme === 'light'
-              ? 'text-white'
-              : 'text-black dark:text-white'
-          }`}
+          className={buttonClasses}
           onClick={() => router.push('/connect-address')}
         >
           Хаяг холбох
         </button>
         <button
-          className={`text-md hover:text-[#657bdb] ${
-            path === '/' && theme === 'light'
-              ? 'text-white'
-              : 'text-black dark:text-white'
-          }`}
+          className={buttonClasses}
           onClick={() => router.push('/service-situation')}
         >
           Санамж
         </button>
         <button
-          className={`text-md hover:text-[#657bdb] ${
-            path === '/' && theme === 'light'
-              ? 'text-white'
-              : 'text-black dark:text-white'
-          }`}
+          className={buttonClasses}
           onClick={() => router.push('/link-order')}
         >
           Линк захиалага

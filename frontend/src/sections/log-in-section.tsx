@@ -14,7 +14,7 @@ import { Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 type CardProps = React.ComponentProps<typeof Card>;
 
@@ -57,6 +57,11 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
 
   return (
     <div className='flex flex-col items-center justify-center gap-3 px-3'>
+      <ToastContainer
+        position='top-right'
+        className={'z-50'}
+        autoClose={3000}
+      />
       <Card className={cn('max-w-[480px] w-full', className)} {...props}>
         <CardHeader>
           <CardTitle>Та нэвтэрнэ үү!</CardTitle>
