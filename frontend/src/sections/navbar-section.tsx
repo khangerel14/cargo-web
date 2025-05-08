@@ -1,7 +1,6 @@
 'use client';
 
 import { ModeToggle } from '@/components/mode-toggle';
-import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { NavbarSheet } from './navbar-sheet';
 import { useState, useEffect } from 'react';
@@ -53,8 +52,12 @@ export const NavbarSection = () => {
   return (
     <div className='container flex items-center justify-between fixed inset-0 h-20 z-50 bg-transparent backdrop-blur-sm dark:bg-[#3c479a40] dark:bg-opacity-50'>
       <div>
-        <button onClick={() => router.push('/')} aria-label='Go to homepage'>
-          <Image src='/star.png' alt='star cargoo' width={80} height={24} />
+        <button
+          onClick={() => router.push('/')}
+          aria-label='Go to homepage'
+          className='text-2xl font-medium text-yellow-400'
+        >
+          Star Cargo
         </button>
       </div>
       <div className='flex items-center gap-6 max-lg:hidden'>
