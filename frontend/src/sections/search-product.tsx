@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { debounce } from 'lodash';
 import { EditDialog } from './edit-dialog';
+import { Card } from '@/components/ui/card';
 
 const translations = {
   loading: 'Ачаалалж байна...',
@@ -109,7 +110,11 @@ export function SearchTable() {
   };
 
   if (loading) {
-    return <div className='flex justify-center'>{translations.loading}</div>;
+    return (
+      <div className='flex justify-center text-white'>
+        {translations.loading}
+      </div>
+    );
   }
 
   if (error) {
@@ -119,7 +124,7 @@ export function SearchTable() {
   const sum = userData.reduce((total, item) => total + (item.price || 0), 0);
 
   return (
-    <>
+    <Card>
       <div className='w-full md:w-[900px] flex justify-between items-center'>
         <Button onClick={() => router.push('/information')}>Буцах</Button>
         <label htmlFor='phoneNumber' className='sr-only'>
@@ -198,6 +203,6 @@ export function SearchTable() {
           ))}
         </TableBody>
       </Table>
-    </>
+    </Card>
   );
 }

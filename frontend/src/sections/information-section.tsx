@@ -6,6 +6,7 @@ import { UserTable } from './user-table';
 import { AdminTable } from './admin-table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArchivedTable } from './archived-table';
+import Image from 'next/image';
 
 export const InformationSection = () => {
   const [userRole, setUserRole] = useState(null);
@@ -45,39 +46,48 @@ export const InformationSection = () => {
   }
 
   return (
-    <div className='bg-[#EAEBFA] py-20 flex flex-col gap-10 items-center w-full min-h-screen pt-40 max-lg:px-5 dark:bg-[#070845]'>
-      <h1 className='font-semibold text-2xl text-center'>
-        Таны бүтээгдэхүүний мэдээлэл
-      </h1>
-      <div className='w-full md:w-[950px] flex flex-col gap-5'>
-        {error && <p className='text-red-500'>{error}</p>}
-        {userRole === ROLE.USER ? (
-          <Tabs defaultValue='product'>
-            <TabsList className='grid w-full grid-cols-2'>
-              <TabsTrigger value='product'>Бүтээгдэхүүн</TabsTrigger>
-              <TabsTrigger value='archive'>Архивласан</TabsTrigger>
-            </TabsList>
-            <TabsContent value='product'>
-              <UserTable phoneNumber={phoneNumber} />
-            </TabsContent>
-            <TabsContent value='archive'>
-              <ArchivedTable userRole={userRole} phoneNumber={phoneNumber} />
-            </TabsContent>
-          </Tabs>
-        ) : (
-          <Tabs defaultValue='product'>
-            <TabsList className='grid w-full grid-cols-2'>
-              <TabsTrigger value='product'>Бүтээгдэхүүн</TabsTrigger>
-              <TabsTrigger value='archive'>Архивласан</TabsTrigger>
-            </TabsList>
-            <TabsContent value='product'>
-              <AdminTable />
-            </TabsContent>
-            <TabsContent value='archive'>
-              <ArchivedTable userRole={userRole} phoneNumber={phoneNumber} />
-            </TabsContent>
-          </Tabs>
-        )}
+    <div className='relative'>
+      <Image
+        src='/image.jpg'
+        width={200}
+        height={200}
+        alt='bg'
+        className='w-full min-h-screen h-fit object-cover z-10'
+      />
+      <div className='absolute top-0 left-0 right-0 py-20 flex flex-col gap-10 items-center w-full pt-40 max-lg:px-5'>
+        <h1 className='font-semibold text-2xl text-center text-white'>
+          Таны бүтээгдэхүүний мэдээлэл
+        </h1>
+        <div className='w-full md:w-[950px] flex flex-col gap-5'>
+          {error && <p className='text-red-500'>{error}</p>}
+          {userRole === ROLE.USER ? (
+            <Tabs defaultValue='product'>
+              <TabsList className='grid w-full grid-cols-2'>
+                <TabsTrigger value='product'>Бүтээгдэхүүн</TabsTrigger>
+                <TabsTrigger value='archive'>Архивласан</TabsTrigger>
+              </TabsList>
+              <TabsContent value='product'>
+                <UserTable phoneNumber={phoneNumber} />
+              </TabsContent>
+              <TabsContent value='archive'>
+                <ArchivedTable userRole={userRole} phoneNumber={phoneNumber} />
+              </TabsContent>
+            </Tabs>
+          ) : (
+            <Tabs defaultValue='product'>
+              <TabsList className='grid w-full grid-cols-2'>
+                <TabsTrigger value='product'>Бүтээгдэхүүн</TabsTrigger>
+                <TabsTrigger value='archive'>Архивласан</TabsTrigger>
+              </TabsList>
+              <TabsContent value='product'>
+                <AdminTable />
+              </TabsContent>
+              <TabsContent value='archive'>
+                <ArchivedTable userRole={userRole} phoneNumber={phoneNumber} />
+              </TabsContent>
+            </Tabs>
+          )}
+        </div>
       </div>
     </div>
   );

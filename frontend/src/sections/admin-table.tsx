@@ -18,6 +18,7 @@ import { changeStatus } from '@/utils/change-status';
 import { Badge } from '@/components/ui/badge';
 import { EditDialog } from './edit-dialog';
 import { useRouter } from 'next/navigation';
+import { Card } from '@/components/ui/card';
 
 export function AdminTable() {
   const router = useRouter();
@@ -85,7 +86,9 @@ export function AdminTable() {
   };
 
   if (loading) {
-    return <div className='flex justify-center'>Ачаалалж байна...</div>;
+    return (
+      <div className='flex justify-center text-white'>Ачаалалж байна...</div>
+    );
   }
 
   if (error) {
@@ -96,7 +99,7 @@ export function AdminTable() {
     ?.filter((item) => item.status !== STATUS.HANDED_OVER)
     .reduce((total, item) => total + (item.price || 0), 0);
   return (
-    <>
+    <Card>
       <div className='w-full md:w-[950px] flex justify-end gap-2'>
         <ProductDialog fetchData={fetchData} />
         <Button onClick={() => router.push('/search-product')}>
@@ -172,6 +175,6 @@ export function AdminTable() {
             ))}
         </TableBody>
       </Table>
-    </>
+    </Card>
   );
 }
