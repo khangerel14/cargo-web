@@ -6,8 +6,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { NavbarSheet } from './navbar-sheet';
 import { useState, useEffect } from 'react';
 import { UserDialog } from './user-dialog';
+import { useTheme } from 'next-themes';
 
 export const NavbarSection = () => {
+  const { theme } = useTheme();
   const router = useRouter();
   const path = usePathname();
   const [user, setUser] = useState(null);
@@ -37,45 +39,49 @@ export const NavbarSection = () => {
   return (
     <div className='container flex items-center justify-between fixed inset-0 h-20 z-50 bg-transparent backdrop-blur-sm dark:bg-[#3c479a40] dark:bg-opacity-50'>
       <div>
-        <button onClick={() => router.push('/')}>
+        <button onClick={() => router.push('/')} aria-label='Go to homepage'>
           <Image src='/star.png' alt='star cargoo' width={80} height={24} />
         </button>
       </div>
       <div className='flex items-center gap-6 max-lg:hidden'>
         {user && (
           <button
-            className='text-md hover:text-[#657bdb]'
-            style={{
-              textDecoration: path === 'information' ? '#284CE5' : 'black',
-            }}
+            className={`text-md hover:text-[#657bdb] ${
+              path === '/' && theme === 'light'
+                ? 'text-white'
+                : 'text-black dark:text-white'
+            }`}
             onClick={() => router.push('/information')}
           >
             Захиалгууд
           </button>
         )}
         <button
-          className='text-md hover:text-[#657bdb]'
-          style={{
-            textDecoration: path === 'connect-address' ? '#284CE5' : 'black',
-          }}
+          className={`text-md hover:text-[#657bdb] ${
+            path === '/' && theme === 'light'
+              ? 'text-white'
+              : 'text-black dark:text-white'
+          }`}
           onClick={() => router.push('/connect-address')}
         >
           Хаяг холбох
         </button>
         <button
-          className='text-md hover:text-[#657bdb]'
-          style={{
-            textDecoration: path === 'service-situation' ? '#284CE5' : 'black',
-          }}
+          className={`text-md hover:text-[#657bdb] ${
+            path === '/' && theme === 'light'
+              ? 'text-white'
+              : 'text-black dark:text-white'
+          }`}
           onClick={() => router.push('/service-situation')}
         >
           Санамж
         </button>
         <button
-          className='text-md hover:text-[#657bdb]'
-          style={{
-            textDecoration: path === '/link-order' ? '#284CE5' : 'black',
-          }}
+          className={`text-md hover:text-[#657bdb] ${
+            path === '/' && theme === 'light'
+              ? 'text-white'
+              : 'text-black dark:text-white'
+          }`}
           onClick={() => router.push('/link-order')}
         >
           Линк захиалага
