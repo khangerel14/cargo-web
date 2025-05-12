@@ -232,3 +232,36 @@ export const getProductsByUserNumber = async (req: Request, res: Response) => {
     });
   }
 };
+
+// Controller to update status of multiple products
+export const updateProductsStatus = async (req: Request, res: Response) => {
+  try {
+    const { productIds, status } = req.body;
+    console.log(productIds, status);
+
+    // Update products with the given IDs
+    const result = await Product.updateMany(
+      { _id: { $in: productIds } }, // Match products with IDs in the array
+      { $set: { status } }, // Set the new status
+      { runValidators: true } // Ensure schema validators are applied
+    );
+
+    // Check if any documents were modified
+    if (result.matchedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No products found with the provided IDs' });
+    }
+
+    res.status(200).json({
+      message: 'Product statuses updated successfully',
+      matchedCount: result.matchedCount,
+      modifiedCount: result.modifiedCount,
+    });
+  } catch (error) {
+    console.error('Error updating product statuses:', error);
+    res
+      .status(500)
+      .json({ message: 'Server error', error: (error as Error).message });
+  }
+};

@@ -10,6 +10,7 @@ import {
   getProductsByUserNumber,
   getProductsByStatusAdmin,
   updateProductsByPhoneNumber,
+  updateProductsStatus,
 } from '../controllers/productController';
 
 const router = express.Router();
@@ -62,6 +63,8 @@ router.get(
 
 // Update pickupType for all products by user phoneNumber
 router.put('/put-products', updateProductsByPhoneNumber);
+
+router.put('/update-status', updateProductsStatus);
 
 // Get Product by status
 router.get('/status', getProductsByStatus);
