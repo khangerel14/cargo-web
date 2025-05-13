@@ -43,7 +43,9 @@ export const getProductsByUser = async (
 ): Promise<void> => {
   const { phoneNumber } = req.query;
   try {
-    const products = await Product.find({ phoneNumber: phoneNumber });
+    const products = await Product.find({ phoneNumber: phoneNumber }).sort({
+      updatedAt: -1,
+    });
 
     if (products.length === 0) {
       res
@@ -67,7 +69,7 @@ export const getProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().sort({ updatedAt: -1 });
     res.json(products);
   } catch (error) {
     console.error('Error occurred:', error);
@@ -143,10 +145,12 @@ export const updateProductsByPhoneNumber = async (
 
   try {
     const result = await Product.updateMany(
-      { phoneNumber: phoneNumber },
+      {
+        phoneNumber: phoneNumber,
+        status: 'arrived_in_ulaanbaatar',
+      },
       { $set: { pickupType } }
     );
-
     if (result.matchedCount === 0) {
       res
         .status(404)
@@ -196,7 +200,7 @@ export const getProductsByStatusAdmin = async (req: Request, res: Response) => {
 
     const products = await Product.find({
       status: status,
-    });
+    }).sort({ updatedAt: -1 });
 
     res.json(products);
   } catch (error) {
@@ -239,14 +243,12 @@ export const updateProductsStatus = async (req: Request, res: Response) => {
     const { productIds, status } = req.body;
     console.log(productIds, status);
 
-    // Update products with the given IDs
     const result = await Product.updateMany(
-      { _id: { $in: productIds } }, // Match products with IDs in the array
-      { $set: { status } }, // Set the new status
-      { runValidators: true } // Ensure schema validators are applied
+      { _id: { $in: productIds } },
+      { $set: { status } },
+      { runValidators: true }
     );
 
-    // Check if any documents were modified
     if (result.matchedCount === 0) {
       return res
         .status(404)
