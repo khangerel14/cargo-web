@@ -3,7 +3,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -19,6 +18,14 @@ import { Badge } from '@/components/ui/badge';
 import { EditDialog } from './edit-dialog';
 import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
+import dayjs from 'dayjs';
+
+const translations = {
+  loading: 'Ачаалалж байна...',
+  totalItems: 'Нийтэй бараа',
+  totalAmount: 'Нийтэй дүн',
+  invalidPhone: 'Утасны дугаар оруулна уу.',
+};
 
 export function AdminTable() {
   const router = useRouter();
@@ -96,29 +103,31 @@ export function AdminTable() {
   }
 
   const sum = userData
-    ?.filter((item) => item.status !== STATUS.HANDED_OVER)
+    ?.filter((item) => item.status !== STATUS.HANDED_OVER && item.price > 0)
     .reduce((total, item) => total + (item.price || 0), 0);
+  const sumNumber = userData?.filter(
+    (item) => item.status !== STATUS.HANDED_OVER && item.price > 0
+  ).length;
+
   return (
     <Card>
-      <div className='w-full md:w-[950px] flex justify-end gap-2'>
-        <ProductDialog fetchData={fetchData} />
-        <Button onClick={() => router.push('/search-product')}>
-          Бүтээгдэхүүн хайх
-        </Button>
+      <div className='w-full flex justify-between gap-2'>
+        <div className='flex items-center gap-2'>
+          <p>
+            {translations.totalItems}: {sumNumber}
+          </p>
+          <p>
+            {translations.totalAmount}: {sum} ₮
+          </p>
+        </div>
+        <div className='flex flex-col md:flex-row gap-2'>
+          <ProductDialog fetchData={fetchData} />
+          <Button onClick={() => router.push('/search-product')}>
+            Бүтээгдэхүүн хайх
+          </Button>
+        </div>
       </div>
       <Table aria-label='User products table'>
-        {userData && userData.length > 0 && (
-          <>
-            <TableCaption>
-              Нийтэй бараа:
-              {
-                userData.filter((item) => item.status !== STATUS.HANDED_OVER)
-                  .length
-              }
-            </TableCaption>
-            <TableCaption>Нийтэй дүн: {sum} ₮</TableCaption>
-          </>
-        )}
         <TableHeader>
           <TableRow>
             <TableHead>№</TableHead>
@@ -127,6 +136,7 @@ export function AdminTable() {
             <TableHead>Хүлээж авах</TableHead>
             <TableHead>Утасны дугаар</TableHead>
             <TableHead>Дүн</TableHead>
+            <TableHead>Огноо</TableHead>
             <TableHead className='text-right'>Үйлдэл</TableHead>
           </TableRow>
         </TableHeader>
@@ -154,6 +164,9 @@ export function AdminTable() {
                     <TableCell>{data.phoneNumber}</TableCell>
                     <TableCell>
                       {data.price ? `${data.price} ₮` : 'Дүн оруулаагүй байна'}
+                    </TableCell>
+                    <TableCell>
+                      {dayjs(data.updatedAt).format('DD-MM-YYYY')}
                     </TableCell>
                     <TableCell className='flex items-center justify-end gap-2'>
                       <Button

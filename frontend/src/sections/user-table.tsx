@@ -3,7 +3,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -16,10 +15,18 @@ import { changeStatus } from '@/utils/change-status';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import dayjs from 'dayjs';
 
 type Props = Readonly<{
   phoneNumber: string;
 }>;
+
+const translations = {
+  loading: 'Ачаалалж байна...',
+  totalItems: 'Нийтэй бараа',
+  totalAmount: 'Нийтэй дүн',
+  invalidPhone: 'Утасны дугаар оруулна уу.',
+};
 
 export function UserTable({ phoneNumber }: Props) {
   const [userData, setUserData] = useState<Product[] | null>(null);
@@ -103,9 +110,21 @@ export function UserTable({ phoneNumber }: Props) {
     .filter((item) => item.status !== STATUS.HANDED_OVER)
     .reduce((total, item) => total + (item.price || 0), 0);
 
+  const sumNumber = userData?.filter(
+    (item) => item.status !== STATUS.HANDED_OVER && item.price > 0
+  ).length;
+
   return (
-    <>
-      <div className='w-full md:w-[900px] flex justify-end my-5'>
+    <Card>
+      <div className='w-full md:w-[1000px] flex justify-between my-5'>
+        <div className='flex items-center gap-2'>
+          <p>
+            {translations.totalItems}: {sumNumber}
+          </p>
+          <p>
+            {translations.totalAmount}: {sum} ₮
+          </p>
+        </div>
         <Button
           variant='outline'
           onClick={() => handlePickUp({ phone: phoneNumber })}
@@ -115,66 +134,54 @@ export function UserTable({ phoneNumber }: Props) {
             : 'Очиж авах болгох'}
         </Button>
       </div>
-      <Card>
-        <Table aria-label='User products table'>
-          {userData.length > 0 && (
-            <>
-              <TableCaption>
-                Нийт бараа:
-                {
-                  userData.filter((item) => item.status !== STATUS.HANDED_OVER)
-                    .length
-                }
-              </TableCaption>
-              <TableCaption>Нийт дүн: {sum ?? 0} ₮</TableCaption>
-            </>
-          )}
-          <TableHeader>
-            <TableRow>
-              <TableHead>№</TableHead>
-              <TableHead className='w-[100px]'>Трак код</TableHead>
-              <TableHead>Төлөв</TableHead>
-              <TableHead>Хүлээж авах</TableHead>
-              <TableHead>Утасны дугаар</TableHead>
-              <TableHead className='text-right'>Дүн</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {userData
-              .filter((item: Product) => item.status !== STATUS.HANDED_OVER)
-              .map((data: Product, index) => (
-                <TableRow key={index}>
-                  {data.trackingCode ? (
-                    <>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell className='font-medium'>
-                        {data.trackingCode}
-                      </TableCell>
-                      <TableCell>
-                        <Badge>{changeStatus(data.status)}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        {data.pickupType === PICKUP_TYPE.PICKUP
-                          ? 'Очиж авах'
-                          : 'Хүргүүлж авах'}
-                      </TableCell>
-                      <TableCell>{data.phoneNumber}</TableCell>
-                      <TableCell className='text-right'>
-                        {data.price
-                          ? `${data.price} ₮`
-                          : 'Дүн оруулаагүй байна'}
-                      </TableCell>
-                    </>
-                  ) : (
-                    <TableCell colSpan={6} className='text-center'>
-                      No tracking code available
+      <Table aria-label='User products table'>
+        <TableHeader>
+          <TableRow>
+            <TableHead>№</TableHead>
+            <TableHead className='w-[100px]'>Трак код</TableHead>
+            <TableHead>Төлөв</TableHead>
+            <TableHead>Хүлээж авах</TableHead>
+            <TableHead>Утасны дугаар</TableHead>
+            <TableHead>Дүн</TableHead>
+            <TableHead className='text-right'>Огноо</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {userData
+            .filter((item: Product) => item.status !== STATUS.HANDED_OVER)
+            .map((data: Product, index) => (
+              <TableRow key={index}>
+                {data.trackingCode ? (
+                  <>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell className='font-medium'>
+                      {data.trackingCode}
                     </TableCell>
-                  )}
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </Card>
-    </>
+                    <TableCell>
+                      <Badge>{changeStatus(data.status)}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      {data.pickupType === PICKUP_TYPE.PICKUP
+                        ? 'Очиж авах'
+                        : 'Хүргүүлж авах'}
+                    </TableCell>
+                    <TableCell>{data.phoneNumber}</TableCell>
+                    <TableCell>
+                      {data.price ? `${data.price} ₮` : 'Дүн оруулаагүй байна'}
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      {dayjs(data.updatedAt).format('DD-MM-YYYY')}
+                    </TableCell>
+                  </>
+                ) : (
+                  <TableCell colSpan={6} className='text-center'>
+                    No tracking code available
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </Card>
   );
 }

@@ -3,7 +3,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -12,13 +11,14 @@ import {
 import { Product } from '../../types/product';
 import { PICKUP_TYPE } from '../../types/common';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { changeStatus } from '@/utils/change-status';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
-import { debounce } from 'lodash';
 import { EditDialog } from './edit-dialog';
 import { Card } from '@/components/ui/card';
+import { UpdateProductDialog } from './update-products-dialog';
+import dayjs from 'dayjs';
 
 const translations = {
   loading: 'Ачаалалж байна...',
@@ -33,6 +33,7 @@ export function SearchTable() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
 
   const handleSearch = async ({ phoneNumber }: { phoneNumber?: string }) => {
     if (!phoneNumber || !/^\d+$/.test(phoneNumber)) {
@@ -59,7 +60,9 @@ export function SearchTable() {
       }
 
       const data = await response.json();
-      setUserData(data || []);
+      setUserData(data ?? []);
+      // Reset selected products when new data is fetched
+      setSelectedProductIds([]);
     } catch (error) {
       console.error('Error fetching data:', error);
       setError(`Failed to load data: ${error}`);
@@ -68,17 +71,6 @@ export function SearchTable() {
       setLoading(false);
     }
   };
-
-  const debouncedSearch = debounce((phoneNumber: string) => {
-    handleSearch({ phoneNumber });
-  }, 1500);
-
-  useEffect(() => {
-    if (phoneNumber) {
-      debouncedSearch(phoneNumber);
-    }
-    return () => debouncedSearch.cancel();
-  }, [phoneNumber]);
 
   const handleDelete = async ({ id }: { id: string }) => {
     try {
@@ -97,6 +89,7 @@ export function SearchTable() {
       }
 
       handleSearch({ phoneNumber });
+      setSelectedProductIds((prev) => prev.filter((pid) => pid !== id));
     } catch (error) {
       console.error('Error deleting product:', error);
       setError('Failed to delete product.');
@@ -106,6 +99,22 @@ export function SearchTable() {
   const confirmDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       handleDelete({ id });
+    }
+  };
+
+  const handleCheckboxChange = (productId: string) => {
+    setSelectedProductIds((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedProductIds.length === userData.length) {
+      setSelectedProductIds([]);
+    } else {
+      setSelectedProductIds(userData.map((data) => data._id));
     }
   };
 
@@ -122,36 +131,52 @@ export function SearchTable() {
   }
 
   const sum = userData.reduce((total, item) => total + (item.price || 0), 0);
+  const sumNumber = userData.filter(
+    (item) => typeof item.price === 'number' && item.price > 0
+  ).length;
 
   return (
-    <Card>
-      <div className='w-full md:w-[900px] flex justify-between items-center'>
-        <Button onClick={() => router.push('/information')}>Буцах</Button>
-        <label htmlFor='phoneNumber' className='sr-only'>
-          Phone Number
-        </label>
-        <input
-          id='phoneNumber'
-          type='text'
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          className='border border-gray-300 rounded-md p-2 w-sm'
-        />
+    <Card className='w-fit'>
+      <div className='w-full md:w-[1000px] flex justify-between items-center'>
+        <div className='flex items-center gap-2'>
+          <Button onClick={() => router.push('/information')}>Буцах</Button>
+          <p>
+            {translations.totalItems}: {sumNumber}
+          </p>
+          <p>
+            {translations.totalAmount}: {sum} ₮
+          </p>
+        </div>
+        <div className='flex items-center gap-2'>
+          <input
+            id='phoneNumber'
+            type='text'
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className='border border-gray-300 rounded-md p-2 w-sm'
+          />
+          <Button onClick={() => handleSearch({ phoneNumber })}>Хайх</Button>
+        </div>
       </div>
       <Table aria-label='User products table'>
-        <TableCaption>
-          {translations.totalItems}:{userData.length}
-        </TableCaption>
-        <TableCaption>
-          {translations.totalAmount}: {sum} ₮
-        </TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead>
+              <input
+                type='checkbox'
+                checked={
+                  selectedProductIds.length === userData.length &&
+                  userData.length > 0
+                }
+                onChange={handleSelectAll}
+              />
+            </TableHead>
             <TableHead>№</TableHead>
             <TableHead className='w-[100px]'>Трак код</TableHead>
             <TableHead>Төлөв</TableHead>
             <TableHead>Хүлээж авах</TableHead>
             <TableHead>Утасны дугаар</TableHead>
             <TableHead>Дүн</TableHead>
+            <TableHead>Огноо</TableHead>
             <TableHead className='text-right'>Үйлдэл</TableHead>
           </TableRow>
         </TableHeader>
@@ -160,6 +185,13 @@ export function SearchTable() {
             <TableRow key={data._id}>
               {data.trackingCode ? (
                 <>
+                  <TableCell>
+                    <input
+                      type='checkbox'
+                      checked={selectedProductIds.includes(data._id)}
+                      onChange={() => handleCheckboxChange(data._id)}
+                    />
+                  </TableCell>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className='font-medium'>
                     {data.trackingCode}
@@ -178,6 +210,9 @@ export function SearchTable() {
                   <TableCell>
                     {data.price ? `${data.price} ₮` : 'Дүн оруулаагүй байна'}
                   </TableCell>
+                  <TableCell>
+                    {dayjs(data.updatedAt).format('DD-MM-YYYY')}
+                  </TableCell>
                   <TableCell className='flex items-center justify-end gap-2'>
                     <Button
                       variant='destructive'
@@ -195,7 +230,7 @@ export function SearchTable() {
                   </TableCell>
                 </>
               ) : (
-                <TableCell colSpan={7} className='text-center'>
+                <TableCell colSpan={8} className='text-center'>
                   No tracking code available
                 </TableCell>
               )}
@@ -203,6 +238,13 @@ export function SearchTable() {
           ))}
         </TableBody>
       </Table>
+      <div className='flex justify-end mt-2'>
+        <UpdateProductDialog
+          fetchData={(phoneNumber: string) => handleSearch({ phoneNumber })}
+          phoneNumber={phoneNumber}
+          selectedProductIds={selectedProductIds}
+        />
+      </div>
     </Card>
   );
 }
