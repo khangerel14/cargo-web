@@ -17,6 +17,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import dayjs from 'dayjs';
 
+import { UserStatusDialog } from './user-status-dialog';
+import { toast } from 'react-toastify';
+
 type Props = Readonly<{
   phoneNumber: string;
 }>;
@@ -32,6 +35,7 @@ export function UserTable({ phoneNumber }: Props) {
   const [userData, setUserData] = useState<Product[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>();
 
   const fetchData = useCallback(async () => {
     if (!phoneNumber) {
@@ -45,7 +49,9 @@ export function UserTable({ phoneNumber }: Props) {
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_API_URL
-        }/api/products/user?phoneNumber=${encodeURIComponent(phoneNumber)}`,
+        }/api/products/user?phoneNumber=${encodeURIComponent(phoneNumber)}${
+          status ? `&status=${status}` : ''
+        }`,
         {
           method: 'GET',
           headers: {
@@ -62,7 +68,7 @@ export function UserTable({ phoneNumber }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [phoneNumber]);
+  }, [phoneNumber, status]);
 
   const handlePickUp = async ({ phone }: { phone: string }) => {
     try {
@@ -82,7 +88,8 @@ export function UserTable({ phoneNumber }: Props) {
       });
 
       const data = await response.json();
-      console.log('Response:', data);
+
+      toast(data.message);
       fetchData();
     } catch (error) {
       console.error('Error updating pickup type:', error);
@@ -116,6 +123,7 @@ export function UserTable({ phoneNumber }: Props) {
 
   return (
     <Card>
+      <UserStatusDialog setStatus={setStatus} status={status} />
       <div className='w-full md:w-[1000px] flex justify-between my-5'>
         <div className='flex items-center gap-2'>
           <p>
