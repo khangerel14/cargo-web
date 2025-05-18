@@ -41,9 +41,13 @@ export const getProductsByUser = async (
   req: any,
   res: Response
 ): Promise<void> => {
-  const { phoneNumber } = req.query;
+  const { phoneNumber, status } = req.query;
   try {
-    const products = await Product.find({ phoneNumber: phoneNumber }).sort({
+    const query: any = { phoneNumber: phoneNumber };
+    if (status !== undefined) {
+      query.status = status;
+    }
+    const products = await Product.find(query).sort({
       updatedAt: -1,
     });
 
