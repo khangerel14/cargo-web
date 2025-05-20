@@ -245,7 +245,6 @@ export const getProductsByUserNumber = async (req: Request, res: Response) => {
 export const updateProductsStatus = async (req: Request, res: Response) => {
   try {
     const { productIds, status } = req.body;
-    console.log(productIds, status);
 
     const result = await Product.updateMany(
       { _id: { $in: productIds } },

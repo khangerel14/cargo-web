@@ -1,11 +1,9 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import connectDB from './config/db';
 import productRoutes from './routes/productRoutes';
 import cors from 'cors';
-
-dotenv.config();
+import authRouter from './routes/auth.router';
 
 const app = express();
 app.use(
@@ -19,13 +17,13 @@ connectDB();
 
 app.use(express.json());
 
-// Add root route
 app.get('/', (req, res) => {
   res.send('Welcome to the Cargo-Web API!');
 });
 
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/auth', authRouter);
 
 const PORT = process.env.PORT ?? 5000;
 app.listen(PORT, () => {
