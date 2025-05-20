@@ -74,11 +74,21 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
               type='number'
               onChange={(e) => setPhoneNumber(e.target.value)}
               placeholder='Утасны дугаар'
+              onWheel={(e) => (e.target as HTMLInputElement).blur()}
               className='border border-gray-300 rounded-md p-2 w-full'
             />
           </div>
           <div className='flex flex-col gap-2'>
             <h1>Нууц үг</h1>
+            <div className='flex justify-end'>
+              <Button
+                variant={'ghost'}
+                className='w-fit'
+                onClick={() => router.push('/reset-password')}
+              >
+                Нууц үг мартсан
+              </Button>
+            </div>
             <input
               type='text'
               onChange={(e) => setPassword(e.target.value)}
