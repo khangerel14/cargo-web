@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Product } from '../../types/product';
-import { PICKUP_TYPE } from '../../types/common';
+import { PICKUP_TYPE, STATUS } from '../../types/common';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { changeStatus } from '@/utils/change-status';
@@ -60,8 +60,9 @@ export function SearchTable() {
       }
 
       const data = await response.json();
-      setUserData(data ?? []);
-      // Reset selected products when new data is fetched
+      setUserData(
+        data.filter((item: Product) => item.status !== STATUS.HANDED_OVER) ?? []
+      );
       setSelectedProductIds([]);
     } catch (error) {
       console.error('Error fetching data:', error);
