@@ -11,7 +11,7 @@ export const ConnectAddressSection = () => {
     const clipboard = new ClipboardJS('.copy-btn');
 
     clipboard.on('success', (e) => {
-      const copiedText = e.text.includes('155 4792 6009')
+      const copiedText = e.text.includes('15547926009')
         ? 'Утасны дугаар'
         : 'Хаяг';
       toast.success(`${copiedText} амжилттай хуулсан!`, {
