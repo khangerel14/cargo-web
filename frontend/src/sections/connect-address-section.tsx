@@ -42,7 +42,7 @@ export const ConnectAddressSection = () => {
             <h1 className='font-medium text-md'>155 4792 6009</h1>
             <button
               className='copy-btn cursor-pointer'
-              data-clipboard-text='155 4792 6009'
+              data-clipboard-text='15547926009'
               aria-label='Copy phone number'
             >
               <Icon icon='solar:copy-outline' />
