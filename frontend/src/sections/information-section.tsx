@@ -49,8 +49,8 @@ export const InformationSection = () => {
     <div className='relative'>
       <Image
         src='/image.jpg'
-        width={200}
-        height={200}
+        width={1000}
+        height={1000}
         alt='bg'
         className='w-full min-h-screen h-fit object-cover z-10'
       />
