@@ -22,8 +22,8 @@ import dayjs from 'dayjs';
 
 const translations = {
   loading: 'Ачаалалж байна...',
-  totalItems: 'Нийтэй бараа',
-  totalAmount: 'Нийтэй дүн',
+  totalItems: 'Нийт бараа',
+  totalAmount: 'Нийлбэр дүн',
   invalidPhone: 'Утасны дугаар оруулна уу.',
 };
 
@@ -110,8 +110,8 @@ export function AdminTable() {
   ).length;
 
   return (
-    <Card>
-      <div className='w-full flex justify-between gap-2'>
+    <Card className='w-full max-w-[1300px] p-6 bg-white shadow-md'>
+      <div className='w-full flex justify-between flex-col sm:flex-row gap-5'>
         <div className='flex items-center gap-2'>
           <p>
             {translations.totalItems}: {sumNumber}

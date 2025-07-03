@@ -26,8 +26,8 @@ type Props = Readonly<{
 
 const translations = {
   loading: 'Ачаалалж байна...',
-  totalItems: 'Нийтэй бараа',
-  totalAmount: 'Нийтэй дүн',
+  totalItems: 'Нийт бараа',
+  totalAmount: 'Нийлбэр дүн',
   invalidPhone: 'Утасны дугаар оруулна уу.',
 };
 
@@ -122,10 +122,10 @@ export function UserTable({ phoneNumber }: Props) {
   ).length;
 
   return (
-    <Card>
+    <Card className='w-full max-w-[1300px] p-6 bg-white shadow-md'>
       <UserStatusDialog setStatus={setStatus} status={status} />
-      <div className='w-full md:w-[1000px] flex justify-between my-5'>
-        <div className='flex items-center gap-2'>
+      <div className='flex justify-between flex-col sm:flex-row my-5 gap-5'>
+        <div className='flex items-center gap-5'>
           <p>
             {translations.totalItems}: {sumNumber}
           </p>

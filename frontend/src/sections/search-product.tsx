@@ -22,8 +22,8 @@ import dayjs from 'dayjs';
 
 const translations = {
   loading: 'Ачаалалж байна...',
-  totalItems: 'Нийтэй бараа',
-  totalAmount: 'Нийтэй дүн',
+  totalItems: 'Нийт бараа',
+  totalAmount: 'Нийлбэр дүн',
   invalidPhone: 'Утасны дугаар оруулна уу.',
 };
 
@@ -137,9 +137,9 @@ export function SearchTable() {
   ).length;
 
   return (
-    <Card className='w-fit'>
-      <div className='w-full md:w-[1000px] flex justify-between items-center'>
-        <div className='flex items-center gap-2'>
+    <Card className='w-full max-w-[1300px] p-6 bg-white shadow-md mt-40'>
+      <div className='w-full flex sm:flex-row flex-col justify-between items-center gap-5'>
+        <div className='flex items-center gap-4'>
           <Button onClick={() => router.push('/information')}>Буцах</Button>
           <p>
             {translations.totalItems}: {sumNumber}
@@ -149,13 +149,13 @@ export function SearchTable() {
           </p>
         </div>
         <div className='flex items-center gap-2'>
+          <Button onClick={() => handleSearch({ phoneNumber })}>Хайх</Button>
           <input
             id='phoneNumber'
             type='text'
             onChange={(e) => setPhoneNumber(e.target.value)}
-            className='border border-gray-300 rounded-md p-2 w-sm'
+            className='border border-gray-300 rounded-md p-2 max-w-sm'
           />
-          <Button onClick={() => handleSearch({ phoneNumber })}>Хайх</Button>
         </div>
       </div>
       <Table aria-label='User products table'>
