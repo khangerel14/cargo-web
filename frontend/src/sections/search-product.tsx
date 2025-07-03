@@ -137,7 +137,7 @@ export function SearchTable() {
   ).length;
 
   return (
-    <Card className='w-full max-w-[1300px] p-6 bg-white shadow-md mt-40'>
+    <Card className='w-full max-w-[1300px] p-6 shadow-md mt-40'>
       <div className='w-full flex sm:flex-row flex-col justify-between items-center gap-5'>
         <div className='flex items-center gap-4'>
           <Button onClick={() => router.push('/information')}>Буцах</Button>

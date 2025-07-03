@@ -110,7 +110,7 @@ export function AdminTable() {
   ).length;
 
   return (
-    <Card className='w-full max-w-[1300px] p-6 bg-white shadow-md'>
+    <Card className='w-full max-w-[1300px] shadow-md'>
       <div className='w-full flex justify-between flex-col sm:flex-row gap-5'>
         <div className='flex items-center gap-2'>
           <p>

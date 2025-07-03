@@ -122,7 +122,7 @@ export function UserTable({ phoneNumber }: Props) {
   ).length;
 
   return (
-    <Card className='w-full max-w-[1300px] p-6 bg-white shadow-md'>
+    <Card className='w-full max-w-[1300px] p-6 shadow-md'>
       <UserStatusDialog setStatus={setStatus} status={status} />
       <div className='flex justify-between flex-col sm:flex-row my-5 gap-5'>
         <div className='flex items-center gap-5'>
