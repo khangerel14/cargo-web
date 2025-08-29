@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import dayjs from 'dayjs';
 
 type Props = Readonly<{
   phoneNumber: string;
@@ -54,7 +55,7 @@ export function ArchivedTable({ phoneNumber, userRole }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [phoneNumber]);
+  }, [phoneNumber, userRole]);
 
   useEffect(() => {
     fetchData();
@@ -95,7 +96,7 @@ export function ArchivedTable({ phoneNumber, userRole }: Props) {
     return <div className='text-red-500'>{error}</div>;
   }
   return (
-    <Card>
+    <Card className='w-full p-6'>
       <Table aria-label='User products table' className='mt-6'>
         <TableHeader>
           <TableRow>
@@ -105,6 +106,7 @@ export function ArchivedTable({ phoneNumber, userRole }: Props) {
             <TableHead>Хүлээж авах</TableHead>
             <TableHead>Утасны дугаар</TableHead>
             <TableHead>Дүн</TableHead>
+            <TableHead>Огноо</TableHead>
             <TableHead className='text-right'>Үйлдэл</TableHead>
           </TableRow>
         </TableHeader>
@@ -130,6 +132,9 @@ export function ArchivedTable({ phoneNumber, userRole }: Props) {
                   <TableCell>{data.phoneNumber}</TableCell>
                   <TableCell>
                     {data.price ? `${data.price} ₮` : 'Дүн оруулаагүй байна'}
+                  </TableCell>
+                  <TableCell>
+                    {dayjs(data.updatedAt).format('DD-MM-YYYY')}
                   </TableCell>
                   <TableCell className='flex items-center justify-end gap-2'>
                     <Button

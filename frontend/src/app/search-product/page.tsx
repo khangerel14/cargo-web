@@ -15,7 +15,7 @@ const Page = () => {
         <h1 className='font-semibold text-2xl text-center text-white'>
           Таны бүтээгдэхүүний мэдээлэл
         </h1>
-        <div className='w-full md:w-[900px] flex flex-col gap-5'>
+        <div className='w-full md:w-[1200px] flex flex-col gap-5'>
           <SearchTable />
         </div>
       </div>

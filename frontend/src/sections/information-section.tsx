@@ -58,7 +58,7 @@ export const InformationSection = () => {
         <h1 className='font-semibold text-2xl text-center text-white'>
           Таны бүтээгдэхүүний мэдээлэл
         </h1>
-        <div className='w-full md:w-[1000px] flex flex-col gap-5'>
+        <div className='w-full md:w-[1200px] flex flex-col gap-5'>
           {error && <p className='text-red-500'>{error}</p>}
           {userRole === ROLE.USER ? (
             <Tabs defaultValue='product'>

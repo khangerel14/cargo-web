@@ -33,11 +33,33 @@ export function SearchTable() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [trackingCode, setTrackingCode] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
 
-  const handleSearch = async ({ phoneNumber }: { phoneNumber?: string }) => {
-    if (!phoneNumber || !/^\d+$/.test(phoneNumber)) {
+  const handleSearch = async ({
+    phoneNumber,
+    trackingCode,
+    startDate,
+    endDate,
+  }: {
+    phoneNumber?: string;
+    trackingCode?: string;
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    // Check if at least one search parameter is provided (phone number, tracking code, or dates)
+    if (!phoneNumber && !trackingCode && !startDate && !endDate) {
       setUserData([]);
+      setError('Утасны дугаар, трак код эсвэл огноо оруулна уу');
+      return;
+    }
+
+    // Validate phone number format if provided
+    if (phoneNumber && !/^\d+$/.test(phoneNumber)) {
+      setUserData([]);
+      setError('Утасны дугаар зөвхөн тоо байх ёстой');
       return;
     }
 
@@ -45,8 +67,14 @@ export function SearchTable() {
     setError(null);
     try {
       const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      const params = new URLSearchParams();
+      if (phoneNumber) params.append('phoneNumber', phoneNumber);
+      if (trackingCode) params.append('trackingCode', trackingCode);
+      if (startDate && startDate.trim()) params.append('startDate', startDate);
+      if (endDate && endDate.trim()) params.append('endDate', endDate);
+
       const response = await fetch(
-        `${API_URL}/api/products/user/home?phoneNumber=${phoneNumber}`,
+        `${API_URL}/api/products/user/home?${params.toString()}`,
         {
           method: 'GET',
           headers: {
@@ -89,7 +117,7 @@ export function SearchTable() {
         throw new Error('Failed to delete product');
       }
 
-      handleSearch({ phoneNumber });
+      handleSearch({ phoneNumber, trackingCode, startDate, endDate });
       setSelectedProductIds((prev) => prev.filter((pid) => pid !== id));
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -149,11 +177,39 @@ export function SearchTable() {
           </p>
         </div>
         <div className='flex items-center gap-2'>
-          <Button onClick={() => handleSearch({ phoneNumber })}>Хайх</Button>
+          <Button
+            onClick={() =>
+              handleSearch({ phoneNumber, trackingCode, startDate, endDate })
+            }
+          >
+            Хайх
+          </Button>
           <input
             id='phoneNumber'
             type='text'
+            placeholder='Утасны дугаар'
             onChange={(e) => setPhoneNumber(e.target.value)}
+            className='border border-gray-300 rounded-md p-2 max-w-sm'
+          />
+          <input
+            id='trackingCode'
+            type='text'
+            placeholder='Трак код'
+            onChange={(e) => setTrackingCode(e.target.value)}
+            className='border border-gray-300 rounded-md p-2 max-w-sm'
+          />
+          <input
+            id='startDate'
+            type='date'
+            placeholder='Эхлэх огноо'
+            onChange={(e) => setStartDate(e.target.value)}
+            className='border border-gray-300 rounded-md p-2 max-w-sm'
+          />
+          <input
+            id='endDate'
+            type='date'
+            placeholder='Дуусах огноо'
+            onChange={(e) => setEndDate(e.target.value)}
             className='border border-gray-300 rounded-md p-2 max-w-sm'
           />
         </div>
@@ -224,7 +280,12 @@ export function SearchTable() {
                     <EditDialog
                       row={data}
                       handleSearch={(phoneNumber: string) =>
-                        handleSearch({ phoneNumber })
+                        handleSearch({
+                          phoneNumber,
+                          trackingCode,
+                          startDate,
+                          endDate,
+                        })
                       }
                       phoneNumber={phoneNumber}
                     />
@@ -241,7 +302,9 @@ export function SearchTable() {
       </Table>
       <div className='flex justify-end mt-2'>
         <UpdateProductDialog
-          fetchData={(phoneNumber: string) => handleSearch({ phoneNumber })}
+          fetchData={(phoneNumber: string) =>
+            handleSearch({ phoneNumber, trackingCode, startDate, endDate })
+          }
           phoneNumber={phoneNumber}
           selectedProductIds={selectedProductIds}
         />

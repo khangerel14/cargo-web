@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardAction, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { FooterSection } from '@/sections/footer-section';
 import { LogInSection } from '@/sections/log-in-section';
 import Image from 'next/image';
@@ -13,22 +13,60 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [trackingCode, setTrackingCode] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
-  const handleSearch = async ({ phoneNumber }: { phoneNumber: string }) => {
+  const handleSearch = async ({
+    phoneNumber,
+    trackingCode,
+    startDate,
+    endDate,
+  }: {
+    phoneNumber: string;
+    trackingCode: string;
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    // Debug logging
+    console.log('Search parameters:', {
+      phoneNumber,
+      trackingCode,
+      startDate,
+      endDate,
+    });
+
+    // Check if at least one search parameter is provided (phone number, tracking code, or dates)
+    if (!phoneNumber && !trackingCode && !startDate && !endDate) {
+      setError('Утасны дугаар, трак код эсвэл огноо оруулна уу');
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/products/user/home?phoneNumber=${phoneNumber}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const params = new URLSearchParams();
+      if (phoneNumber) params.append('phoneNumber', phoneNumber);
+      if (trackingCode) params.append('trackingCode', trackingCode);
+      if (startDate && startDate.trim()) params.append('startDate', startDate);
+      if (endDate && endDate.trim()) params.append('endDate', endDate);
+
+      const url = `${
+        process.env.NEXT_PUBLIC_API_URL
+      }/api/products/user/home?${params.toString()}`;
+
+      console.log('Searching URL:', url);
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       const data = await response.json();
+      console.log('Search response:', data);
+
       const formattedData = Array.isArray(data) ? data : data ? [data] : [];
       setUserData(formattedData);
     } catch (error) {
@@ -60,11 +98,111 @@ export default function Home() {
                   Утасны дугаар эсвэл трак кодоор хайх
                 </CardTitle>
                 <CardContent>
-                  <input
-                    type='text'
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className='border border-gray-300 rounded-md p-2 w-full'
-                  />
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      console.log('Form submitted!');
+                      handleSearch({
+                        phoneNumber,
+                        trackingCode,
+                        startDate,
+                        endDate,
+                      });
+                    }}
+                  >
+                    <input
+                      type='text'
+                      placeholder='Утасны дугаар'
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      onKeyDown={(e) => {
+                        console.log('Key pressed:', e.key);
+                        if (e.key === 'Enter') {
+                          console.log('Enter pressed on phone input');
+                          e.preventDefault();
+                          handleSearch({
+                            phoneNumber,
+                            trackingCode,
+                            startDate,
+                            endDate,
+                          });
+                        }
+                      }}
+                      className='border border-gray-300 rounded-md p-2 w-full mb-2'
+                    />
+                    <input
+                      type='text'
+                      placeholder='Трак код'
+                      onChange={(e) => setTrackingCode(e.target.value)}
+                      onKeyDown={(e) => {
+                        console.log('Key pressed:', e.key);
+                        if (e.key === 'Enter') {
+                          console.log('Enter pressed on tracking input');
+                          e.preventDefault();
+                          handleSearch({
+                            phoneNumber,
+                            trackingCode,
+                            startDate,
+                            endDate,
+                          });
+                        }
+                      }}
+                      className='border border-gray-300 rounded-md p-2 w-full mb-2'
+                    />
+                    <div className='flex gap-2 mb-2'>
+                      <input
+                        type='date'
+                        placeholder='Эхлэх огноо'
+                        onChange={(e) => setStartDate(e.target.value)}
+                        onKeyDown={(e) => {
+                          console.log('Key pressed:', e.key);
+                          if (e.key === 'Enter') {
+                            console.log('Enter pressed on start date input');
+                            e.preventDefault();
+                            handleSearch({
+                              phoneNumber,
+                              trackingCode,
+                              startDate,
+                              endDate,
+                            });
+                          }
+                        }}
+                        className='border border-gray-300 rounded-md p-2 flex-1'
+                      />
+                      <input
+                        type='date'
+                        placeholder='Дуусах огноо'
+                        onChange={(e) => setEndDate(e.target.value)}
+                        onKeyDown={(e) => {
+                          console.log('Key pressed:', e.key);
+                          if (e.key === 'Enter') {
+                            console.log('Enter pressed on end date input');
+                            e.preventDefault();
+                            handleSearch({
+                              phoneNumber,
+                              trackingCode,
+                              startDate,
+                              endDate,
+                            });
+                          }
+                        }}
+                        className='border border-gray-300 rounded-md p-2 flex-1'
+                      />
+                    </div>
+                    <button
+                      type='submit'
+                      className='bg-black text-white rounded-md p-2 w-full'
+                      onClick={() =>
+                        handleSearch({
+                          phoneNumber,
+                          trackingCode,
+                          startDate,
+                          endDate,
+                        })
+                      }
+                    >
+                      Хайх
+                    </button>
+                  </form>
                   {error && <p className='text-red-500'>{error}</p>}
                   {userData.length > 0 && (
                     <div className='mt-4'>
@@ -85,14 +223,6 @@ export default function Home() {
                   )}
                   {loading && <p>Ачаалалж байна...</p>}
                 </CardContent>
-                <CardAction className='flex justify-end w-full px-5'>
-                  <button
-                    className='bg-black text-white rounded-md p-2 w-full'
-                    onClick={() => handleSearch({ phoneNumber })}
-                  >
-                    Хайх
-                  </button>
-                </CardAction>
               </Card>
             </div>
           </main>
