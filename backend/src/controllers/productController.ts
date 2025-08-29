@@ -217,19 +217,47 @@ export const getProductsByStatusAdmin = async (req: Request, res: Response) => {
 };
 
 export const getProductsByUserNumber = async (req: Request, res: Response) => {
-  const { phoneNumber } = req.query;
+  const { phoneNumber, trackingCode, startDate, endDate } = req.query;
 
-  if (!phoneNumber) {
-    return res.status(400).json({ message: 'Missing phoneNumber' });
+  // Check if at least one search parameter is provided
+  if (!phoneNumber && !trackingCode && !startDate && !endDate) {
+    return res.status(400).json({
+      message: 'Missing phoneNumber, trackingCode, or date parameters',
+    });
   }
 
   try {
-    const products = await Product.find({
-      $or: [
+    const query: any = {};
+
+    if (phoneNumber && trackingCode) {
+      // Search by both phone number and tracking code
+      query.$and = [
         { phoneNumber: phoneNumber.toString() },
-        { trackingCode: phoneNumber.toString() },
-      ],
-    });
+        { trackingCode: trackingCode.toString() },
+      ];
+    } else if (phoneNumber) {
+      // Search by phone number only
+      query.phoneNumber = phoneNumber.toString();
+    } else if (trackingCode) {
+      // Search by tracking code only
+      query.trackingCode = trackingCode.toString();
+    }
+
+    // Add date range filtering if provided
+    if (startDate || endDate) {
+      query.updatedAt = {};
+      if (startDate) {
+        query.updatedAt.$gte = new Date(startDate.toString());
+      }
+      if (endDate) {
+        // Set end date to end of day (23:59:59.999)
+        const endDateTime = new Date(endDate.toString());
+        endDateTime.setHours(23, 59, 59, 999);
+        query.updatedAt.$lte = endDateTime;
+      }
+    }
+
+    const products = await Product.find(query).sort({ updatedAt: -1 });
 
     res.json(products);
   } catch (error) {
