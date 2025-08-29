@@ -14,31 +14,23 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [trackingCode, setTrackingCode] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
 
   const handleSearch = async ({
     phoneNumber,
     trackingCode,
-    startDate,
-    endDate,
   }: {
     phoneNumber: string;
     trackingCode: string;
-    startDate?: string;
-    endDate?: string;
   }) => {
     // Debug logging
     console.log('Search parameters:', {
       phoneNumber,
       trackingCode,
-      startDate,
-      endDate,
     });
 
     // Check if at least one search parameter is provided (phone number, tracking code, or dates)
-    if (!phoneNumber && !trackingCode && !startDate && !endDate) {
-      setError('Утасны дугаар, трак код эсвэл огноо оруулна уу');
+    if (!phoneNumber && !trackingCode) {
+      setError('Утасны дугаар, трак код оруулна уу');
       return;
     }
 
@@ -48,8 +40,6 @@ export default function Home() {
       const params = new URLSearchParams();
       if (phoneNumber) params.append('phoneNumber', phoneNumber);
       if (trackingCode) params.append('trackingCode', trackingCode);
-      if (startDate && startDate.trim()) params.append('startDate', startDate);
-      if (endDate && endDate.trim()) params.append('endDate', endDate);
 
       const url = `${
         process.env.NEXT_PUBLIC_API_URL
@@ -105,8 +95,6 @@ export default function Home() {
                       handleSearch({
                         phoneNumber,
                         trackingCode,
-                        startDate,
-                        endDate,
                       });
                     }}
                   >
@@ -122,8 +110,6 @@ export default function Home() {
                           handleSearch({
                             phoneNumber,
                             trackingCode,
-                            startDate,
-                            endDate,
                           });
                         }
                       }}
@@ -141,53 +127,12 @@ export default function Home() {
                           handleSearch({
                             phoneNumber,
                             trackingCode,
-                            startDate,
-                            endDate,
                           });
                         }
                       }}
                       className='border border-gray-300 rounded-md p-2 w-full mb-2'
                     />
-                    <div className='flex gap-2 mb-2'>
-                      <input
-                        type='date'
-                        placeholder='Эхлэх огноо'
-                        onChange={(e) => setStartDate(e.target.value)}
-                        onKeyDown={(e) => {
-                          console.log('Key pressed:', e.key);
-                          if (e.key === 'Enter') {
-                            console.log('Enter pressed on start date input');
-                            e.preventDefault();
-                            handleSearch({
-                              phoneNumber,
-                              trackingCode,
-                              startDate,
-                              endDate,
-                            });
-                          }
-                        }}
-                        className='border border-gray-300 rounded-md p-2 flex-1'
-                      />
-                      <input
-                        type='date'
-                        placeholder='Дуусах огноо'
-                        onChange={(e) => setEndDate(e.target.value)}
-                        onKeyDown={(e) => {
-                          console.log('Key pressed:', e.key);
-                          if (e.key === 'Enter') {
-                            console.log('Enter pressed on end date input');
-                            e.preventDefault();
-                            handleSearch({
-                              phoneNumber,
-                              trackingCode,
-                              startDate,
-                              endDate,
-                            });
-                          }
-                        }}
-                        className='border border-gray-300 rounded-md p-2 flex-1'
-                      />
-                    </div>
+
                     <button
                       type='submit'
                       className='bg-black text-white rounded-md p-2 w-full'
@@ -195,8 +140,6 @@ export default function Home() {
                         handleSearch({
                           phoneNumber,
                           trackingCode,
-                          startDate,
-                          endDate,
                         })
                       }
                     >

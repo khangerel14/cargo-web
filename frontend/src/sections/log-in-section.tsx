@@ -55,6 +55,13 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleLogin();
+    }
+  };
+
   return (
     <div className='flex flex-col items-center justify-center gap-3 px-3'>
       <ToastContainer
@@ -67,41 +74,45 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
           <CardTitle>Та нэвтэрнэ үү!</CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
-        <CardContent className='grid gap-4'>
-          <div className='flex flex-col gap-2'>
-            <h1>Утасны дугаар</h1>
-            <input
-              type='number'
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder='Утасны дугаар'
-              onWheel={(e) => (e.target as HTMLInputElement).blur()}
-              className='border border-gray-300 rounded-md p-2 w-full'
-            />
-          </div>
-          <div className='flex flex-col gap-2'>
-            <h1>Нууц үг</h1>
-            <div className='flex justify-end'>
-              <Button
-                variant={'ghost'}
-                className='w-fit'
-                onClick={() => router.push('/reset-password')}
-              >
-                Нууц үг мартсан
-              </Button>
+        <form onSubmit={(e) => e.preventDefault()}>
+          <CardContent className='grid gap-4'>
+            <div className='flex flex-col gap-2'>
+              <h1>Утасны дугаар</h1>
+              <input
+                type='number'
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder='Утасны дугаар'
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                onKeyDown={handleKeyDown}
+                className='border border-gray-300 rounded-md p-2 w-full'
+              />
             </div>
-            <input
-              type='text'
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder='Нууц үг'
-              className='border border-gray-300 rounded-md p-2 w-full'
-            />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button className='w-full' onClick={handleLogin}>
-            <Check /> Нэвтрэх
-          </Button>
-        </CardFooter>
+            <div className='flex flex-col gap-2'>
+              <h1>Нууц үг</h1>
+              <div className='flex justify-end'>
+                <Button
+                  variant={'ghost'}
+                  className='w-fit'
+                  onClick={() => router.push('/reset-password')}
+                >
+                  Нууц үг мартсан
+                </Button>
+              </div>
+              <input
+                type='text'
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder='Нууц үг'
+                onKeyDown={handleKeyDown}
+                className='border border-gray-300 rounded-md p-2 w-full'
+              />
+            </div>
+          </CardContent>
+          <CardFooter className='mt-3'>
+            <Button className='w-full' onClick={handleLogin}>
+              <Check /> Нэвтрэх
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
       <div className='flex items-center text-sm text-gray-500 gap-2'>
         <p>Хэрэв та бүртгэлгүй бол бүртгүүлнэ үү!</p>
