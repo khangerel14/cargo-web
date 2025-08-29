@@ -43,7 +43,7 @@ export const getProductsByUser = async (
 ): Promise<void> => {
   const { phoneNumber, status } = req.query;
   try {
-    const query: any = { phoneNumber: phoneNumber };
+    const query: any = { phoneNumber: phoneNumber.toString().trim() };
     if (status !== undefined) {
       query.status = status;
     }
@@ -184,7 +184,7 @@ export const getProductsByStatus = async (req: Request, res: Response) => {
     const { phoneNumber, status } = req.query;
 
     const products = await Product.find({
-      phoneNumber: phoneNumber,
+      phoneNumber: phoneNumber?.toString().trim(),
       status: status,
     });
 
@@ -232,15 +232,17 @@ export const getProductsByUserNumber = async (req: Request, res: Response) => {
     if (phoneNumber && trackingCode) {
       // Search by both phone number and tracking code
       query.$and = [
-        { phoneNumber: phoneNumber.toString() },
-        { trackingCode: trackingCode.toString() },
+        { phoneNumber: phoneNumber.toString().trim() },
+        { trackingCode: { $regex: `^${trackingCode.toString().trim()}\\s*$` } },
       ];
     } else if (phoneNumber) {
       // Search by phone number only
-      query.phoneNumber = phoneNumber.toString();
+      query.phoneNumber = phoneNumber.toString().trim();
     } else if (trackingCode) {
       // Search by tracking code only
-      query.trackingCode = trackingCode.toString();
+      query.trackingCode = {
+        $regex: `^${trackingCode.toString().trim()}\\s*$`,
+      };
     }
 
     // Add date range filtering if provided

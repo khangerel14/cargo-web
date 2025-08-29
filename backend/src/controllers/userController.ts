@@ -160,7 +160,9 @@ export const getUserByPhoneNumber = async (
   const { phoneNumber } = req.query;
 
   try {
-    const user = await User.findOne({ phoneNumber: phoneNumber });
+    const user = await User.findOne({
+      phoneNumber: phoneNumber?.toString().trim(),
+    });
 
     if (!user) {
       res.status(404).json({ message: 'No users found for this phone number' });
