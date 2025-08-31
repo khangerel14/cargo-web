@@ -166,7 +166,7 @@ export function SearchTable() {
 
   return (
     <Card className='w-full max-w-[1300px] p-6 shadow-md mt-40'>
-      <div className='w-full flex sm:flex-row flex-col justify-between items-center gap-5'>
+      <div className='w-full flex lg:flex-row flex-col justify-between items-center gap-5'>
         <div className='flex items-center gap-4'>
           <Button onClick={() => router.push('/information')}>Буцах</Button>
           <p>
@@ -176,42 +176,43 @@ export function SearchTable() {
             {translations.totalAmount}: {sum} ₮
           </p>
         </div>
-        <div className='flex items-center gap-2'>
-          <Button
-            onClick={() =>
-              handleSearch({ phoneNumber, trackingCode, startDate, endDate })
-            }
-          >
-            Хайх
-          </Button>
+        <div className='grid grid-cols-5 gap-2 max-sm:grid-cols-1'>
           <input
             id='phoneNumber'
             type='text'
             placeholder='Утасны дугаар'
             onChange={(e) => setPhoneNumber(e.target.value)}
-            className='border border-gray-300 rounded-md p-2 max-w-sm'
+            className='border border-gray-300 rounded-md p-2 w-full'
           />
           <input
             id='trackingCode'
             type='text'
             placeholder='Трак код'
             onChange={(e) => setTrackingCode(e.target.value)}
-            className='border border-gray-300 rounded-md p-2 max-w-sm'
+            className='border border-gray-300 rounded-md p-2 w-full'
           />
           <input
             id='startDate'
             type='date'
             placeholder='Эхлэх огноо'
             onChange={(e) => setStartDate(e.target.value)}
-            className='border border-gray-300 rounded-md p-2 max-w-sm'
+            className='border border-gray-300 rounded-md p-2 w-full'
           />
           <input
             id='endDate'
             type='date'
             placeholder='Дуусах огноо'
             onChange={(e) => setEndDate(e.target.value)}
-            className='border border-gray-300 rounded-md p-2 max-w-sm'
+            className='border border-gray-300 rounded-md p-2 w-full'
           />
+          <Button
+            onClick={() =>
+              handleSearch({ phoneNumber, trackingCode, startDate, endDate })
+            }
+            className='w-full'
+          >
+            Хайх
+          </Button>
         </div>
       </div>
       <Table aria-label='User products table'>
