@@ -46,9 +46,8 @@ export function BankDialog() {
           <DialogDescription>
             Та доорх дансны мэдээллийг ашиглан төлбөрөө төлнө үү.
           </DialogDescription>
-          <div className='flex items-center justify-between gap-4'>
-            <p>Худалдаа хөгжлийн банк:</p>
-          </div>
+          <p>Худалдаа хөгжлийн банк:</p>
+          <p>Дансны нэр: Ганчимэг Төгөлдөр</p>
           <div className='flex items-center justify-between gap-4'>
             <p>310004000452636321</p>
             <button
