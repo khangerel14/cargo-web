@@ -156,9 +156,10 @@ export const updateProductsByPhoneNumber = async (
       { $set: { pickupType } }
     );
     if (result.matchedCount === 0) {
-      res
-        .status(404)
-        .json({ message: 'Хэрэглэгчид бүртгэлтэй бараа байхгүй байна.' });
+      res.status(404).json({
+        message:
+          'Хэрэглэгчид бүртгэлтэй эсвэл Улаанбаатар ирсэн бараа байхгүй байна.',
+      });
       return;
     }
 
