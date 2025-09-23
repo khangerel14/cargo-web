@@ -8,10 +8,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArchivedTable } from './archived-table';
 import Image from 'next/image';
 
+type UserData = {
+  id: string;
+  phoneNumber: string;
+  role: ROLE;
+};
+
 export const InformationSection = () => {
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+
+  console.log(userRole?.role);
 
   useEffect(() => {
     try {
@@ -60,7 +68,7 @@ export const InformationSection = () => {
         </h1>
         <div className='w-full max-w-[1300px] flex flex-col gap-5'>
           {error && <p className='text-red-500'>{error}</p>}
-          {userRole === ROLE.USER ? (
+          {userRole?.role === ROLE.USER ? (
             <Tabs defaultValue='product'>
               <TabsList className='grid w-full grid-cols-2'>
                 <TabsTrigger value='product'>Бүтээгдэхүүн</TabsTrigger>
@@ -70,7 +78,10 @@ export const InformationSection = () => {
                 <UserTable phoneNumber={phoneNumber} />
               </TabsContent>
               <TabsContent value='archive'>
-                <ArchivedTable userRole={userRole} phoneNumber={phoneNumber} />
+                <ArchivedTable
+                  userRole={userRole.role}
+                  phoneNumber={phoneNumber}
+                />
               </TabsContent>
             </Tabs>
           ) : (
@@ -83,7 +94,10 @@ export const InformationSection = () => {
                 <AdminTable />
               </TabsContent>
               <TabsContent value='archive'>
-                <ArchivedTable userRole={userRole} phoneNumber={phoneNumber} />
+                <ArchivedTable
+                  userRole={userRole?.role}
+                  phoneNumber={phoneNumber}
+                />
               </TabsContent>
             </Tabs>
           )}

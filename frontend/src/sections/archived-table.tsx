@@ -17,9 +17,15 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import dayjs from 'dayjs';
 
+type UserData = {
+  id: string;
+  phoneNumber: string;
+  role: ROLE;
+};
+
 type Props = Readonly<{
   phoneNumber: string;
-  userRole: null | string;
+  userRole?: UserData['role'] | null;
 }>;
 
 export function ArchivedTable({ phoneNumber, userRole }: Props) {

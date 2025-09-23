@@ -1,7 +1,7 @@
-export const ROLE = {
-  ADMIN: 'admin',
-  USER: 'user',
-};
+export enum ROLE {
+  ADMIN = 'admin',
+  USER = 'user',
+}
 
 export const STATUS = {
   ARRIVED_IN_EREEN: 'arrived_in_ereen',

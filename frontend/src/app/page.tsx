@@ -28,7 +28,6 @@ export default function Home() {
       trackingCode,
     });
 
-    // Check if at least one search parameter is provided (phone number, tracking code, or dates)
     if (!phoneNumber && !trackingCode) {
       setError('Утасны дугаар, трак код оруулна уу');
       return;
@@ -79,9 +78,7 @@ export default function Home() {
             className='w-full h-screen object-cover z-10'
           />
           <main className='absolute top-0 left-0 right-0 flex items-center justify-between sm:pt-44 pt-20 h-fit max-w-[950px] mx-auto gap-20 max-lg:flex-col'>
-            <div className='flex flex-col items-center justify-center mx-5 text-center'>
-              <LogInSection />
-            </div>
+            <LogInSection />
             <div className='flex flex-col items-center justify-center mx-5 mb-20'>
               <Card className='max-w-96 z-20'>
                 <CardTitle className='text-lg font-medium px-5 py-0'>
