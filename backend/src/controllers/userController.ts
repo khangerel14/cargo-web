@@ -7,13 +7,22 @@ export const createOrLoginUser = async (
 ): Promise<void> => {
   const { phoneNumber, role = 'user' } = req.body;
 
-  console.log(phoneNumber, role);
   try {
     // Validate required fields
     if (!phoneNumber) {
       res.status(400).json({
         success: false,
         message: 'Phone number is required',
+      });
+      return;
+    }
+
+    // Validate phoneNumber format (basic example, adjust regex as needed)
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid phone number format',
       });
       return;
     }
@@ -31,6 +40,7 @@ export const createOrLoginUser = async (
             id: user._id,
             phoneNumber: user.phoneNumber,
             role: user.role,
+            name: user.name, // Include name in response
           },
         },
       });
@@ -40,6 +50,7 @@ export const createOrLoginUser = async (
         phoneNumber,
         role,
       });
+
       await user.save();
 
       res.status(201).json({
@@ -55,7 +66,32 @@ export const createOrLoginUser = async (
       });
     }
   } catch (error: any) {
-    console.error('User operation error:', error);
+    console.error('User operation error:', {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
+
+    // Handle MongoDB duplicate key error
+    if (error.name === 'MongoError' && error.code === 11000) {
+      res.status(400).json({
+        success: false,
+        message: 'Phone number already exists',
+      });
+      return;
+    }
+
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: error.errors,
+      });
+      return;
+    }
+
+    // Generic server error
     res.status(500).json({
       success: false,
       message: 'Server error',
