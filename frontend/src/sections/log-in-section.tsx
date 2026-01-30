@@ -41,7 +41,6 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        // Store user data in localStorage
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
         localStorage.setItem(
           'phoneNumber',
@@ -52,7 +51,6 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
           JSON.stringify(response.data.data.token || '')
         );
 
-        // Show appropriate success message
         const message =
           response.status === 200
             ? 'Нэвтэрлээ амжилттай!'
@@ -60,7 +58,6 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
 
         toast.success(message);
 
-        // Redirect after a short delay
         setTimeout(() => {
           router.push('/information');
         }, 1500);
@@ -70,7 +67,7 @@ export const LogInSection = ({ className, ...props }: CardProps) => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const message =
-          error.response?.data.message || 'Алдаа гарлаа. Дахин оролдоно ууfew.';
+          error.response?.data.message || 'Алдаа гарлаа. Дахин оролдоно уу.';
         toast.error(message);
       } else {
         console.error('Unexpected error:', error);
