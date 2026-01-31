@@ -13,17 +13,24 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   ...(process.env.FRONTEND_URL?.split(',').map((u: string) => u.trim()).filter(Boolean) ?? []),
+  ...(process.env.BACKEND_URL ? [process.env.BACKEND_URL] : []),
 ];
+
+// Allow Vercel/Render deployment origins (e.g. https://*.vercel.app, https://*.onrender.com)
+const isAllowedDeploymentOrigin = (origin: string) =>
+  /^https:\/\/([a-z0-9-]+\.)*vercel\.app$/i.test(origin) ||
+  /^https:\/\/([a-z0-9-]+\.)*onrender\.com$/i.test(origin);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. Postman, same-origin)
+      // Allow requests with no origin (e.g. Postman, curl, same-origin)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (isAllowedDeploymentOrigin(origin)) return callback(null, true);
       callback(null, false);
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   })
