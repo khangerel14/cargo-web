@@ -12,6 +12,8 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',
+  'https://www.starcargo.mn',
+  'https://starcargo.mn',
   ...(process.env.FRONTEND_URL?.split(',').map((u: string) => u.trim()).filter(Boolean) ?? []),
   ...(process.env.BACKEND_URL ? [process.env.BACKEND_URL] : []),
 ];
@@ -21,18 +23,40 @@ const isAllowedDeploymentOrigin = (origin: string) =>
   /^https:\/\/([a-z0-9-]+\.)*vercel\.app$/i.test(origin) ||
   /^https:\/\/([a-z0-9-]+\.)*onrender\.com$/i.test(origin);
 
+const isOriginAllowed = (origin: string | undefined): boolean => {
+  if (!origin) return true;
+  return (
+    allowedOrigins.includes(origin) ||
+    isAllowedDeploymentOrigin(origin)
+  );
+};
+
+// Set CORS headers on every response so actual XHR responses are never missing them
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && isOriginAllowed(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  }
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. Postman, curl, same-origin)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      if (isAllowedDeploymentOrigin(origin)) return callback(null, true);
+      if (isOriginAllowed(origin)) return callback(null, true);
       callback(null, false);
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
+    optionsSuccessStatus: 200,
   })
 );
 
